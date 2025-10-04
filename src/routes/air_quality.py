@@ -297,3 +297,60 @@ async def get_measurements_by_location_name(
             status_code=500,
             detail=f"Error searching location: {str(e)}"
         )
+
+
+@router.get("/locations/in-area")
+async def get_all_locations_in_area(
+    bbox: str = Query(
+        ...,
+        description="Área de búsqueda en formato bbox (min_lon,min_lat,max_lon,max_lat). Ejemplos: '-109.05,37,-102.04,41' (Colorado), '-74.3,40.4,-73.7,40.9' (NYC)"
+    ),
+    limit: int = Query(
+        100,
+        description="Número máximo de ubicaciones a retornar",
+        ge=1,
+        le=1000
+    )
+):
+    """
+    Obtener TODAS las ubicaciones de monitoreo dentro de un área específica con sus mediciones
+    
+    **API 3: Mapa de Ubicaciones con Datos**
+    
+    Esta API te permite visualizar todos los puntos de monitoreo en un área geográfica
+    y obtener las mediciones de contaminación de cada uno.
+    
+    Ideal para:
+    - Mostrar todos los sensores en un mapa interactivo
+    - Comparar niveles de contaminación entre diferentes puntos de una ciudad
+    - Análisis de densidad de estaciones de monitoreo
+    
+    Ejemplos de bbox útiles:
+    - Colorado: "-109.05,37,-102.04,41"
+    - New York City: "-74.3,40.4,-73.7,40.9"
+    - Los Angeles: "-118.67,33.70,-118.15,34.34"
+    - Chicago: "-87.94,41.64,-87.52,42.02"
+    - Miami: "-80.32,25.71,-80.13,25.86"
+    
+    Cada ubicación incluye:
+    - location_id: ID único de la ubicación
+    - name: Nombre del lugar
+    - locality: Área/región
+    - coordinates: Latitud y longitud
+    - measurements: Mediciones de PM10, PM2.5, NO2, CO, SO2, O3
+    - measurements_summary: Resumen de parámetros disponibles
+    
+    Returns:
+        JSON con todas las ubicaciones y sus mediciones de contaminación
+    """
+    try:
+        data = await client.get_all_locations_in_bbox_with_measurements(
+            bbox=bbox,
+            limit=limit
+        )
+        return data
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error fetching locations: {str(e)}"
+        )
