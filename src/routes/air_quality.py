@@ -14,7 +14,7 @@ client = OpenAQClient()
 async def get_latest_air_quality(
     parameter: str = Query(
         ..., 
-        description="Parameter to query (pm10, pm25, no2, co, so2, o3)"
+        description="Parameter to query (pm10, pm25, no2, co2, so2, o3)"
     ),
     state: Optional[str] = Query(None, description="Filter by US state"),
     city: Optional[str] = Query(None, description="Filter by city"),
@@ -24,10 +24,10 @@ async def get_latest_air_quality(
     Get latest air quality measurements for a specific parameter in the US
     
     Parameters:
-    - pm10: Particulate Matter 10 micrometers (µg/m³)
-    - pm25: Particulate Matter 2.5 micrometers (µg/m³)
+    - pm10: Particulate Matter 10 micrometers
+    - pm25: Particulate Matter 2.5 micrometers
     - no2: Nitrogen Dioxide (ppm)
-    - co: Carbon Monoxide (ppm)
+    - co2: Carbon Dioxide (ppm)
     - so2: Sulfur Dioxide (ppm)
     - o3: Ozone (ppm)
     """
@@ -60,7 +60,7 @@ async def get_all_parameters_latest(
     limit: int = Query(1000, description="Maximum number of results per parameter", ge=1, le=10000)
 ):
     """
-    Get latest measurements for all monitored parameters (PM10, PM2.5, NO2, CO, SO2, O3)
+    Get latest measurements for all monitored parameters (pm10, pm2.5, NO2, CO2, SO2, O3)
     """
     try:
         data = await client.get_all_parameters_latest(
@@ -149,24 +149,23 @@ async def get_air_quality_summary(
 @router.get("/states", response_model=dict)
 async def get_available_states():
     """
-    Get a list of US states with predefined bounding boxes for easy searching
+    Get a list of US states with air quality monitoring stations
+    Note: This is a comprehensive list of US states that may have monitoring stations
     """
     us_states = {
-        "available_states": [
-            {"name": "Colorado", "key": "colorado"},
-            {"name": "California", "key": "california"},
-            {"name": "New York", "key": "new_york"},
-            {"name": "Texas", "key": "texas"},
-            {"name": "Florida", "key": "florida"},
-            {"name": "Washington", "key": "washington"},
-            {"name": "Illinois", "key": "illinois"},
-            {"name": "Pennsylvania", "key": "pennsylvania"},
-            {"name": "Ohio", "key": "ohio"},
-            {"name": "Michigan", "key": "michigan"},
-            {"name": "Entire USA", "key": "entire_us"}
+        "states": [
+            "Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado",
+            "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Idaho",
+            "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana",
+            "Maine", "Maryland", "Massachusetts", "Michigan", "Minnesota",
+            "Mississippi", "Missouri", "Montana", "Nebraska", "Nevada",
+            "New Hampshire", "New Jersey", "New Mexico", "New York",
+            "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon",
+            "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota",
+            "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington",
+            "West Virginia", "Wisconsin", "Wyoming", "District of Columbia"
         ],
-        "note": "Use the 'key' value in the 'state' parameter when searching locations",
-        "example": "/measurements/by-location-name?location_name=denver&state=colorado"
+        "note": "Use these state names when filtering air quality data"
     }
     return us_states
 
@@ -184,12 +183,12 @@ async def get_measurements_by_parameter(
     Obtener todas las mediciones de un tipo específico de contaminación
     
     Parámetros disponibles:
-    - 1: PM10 (Particulate Matter 10 micrometers) - µg/m³
-    - 2: PM2.5 (Particulate Matter 2.5 micrometers) - µg/m³
-    - 7: NO2 (Nitrogen Dioxide) - ppm
-    - 8: CO (Carbon Monoxide) - ppm
-    - 9: SO2 (Sulfur Dioxide) - ppm
-    - 10: O3 (Ozone) - ppm
+    - 1: PM10 (Particulate Matter 10 micrometers)
+    - 2: PM2.5 (Particulate Matter 2.5 micrometers)
+    - 7: NO2 ppm (Nitrogen Dioxide)
+    - 8: CO2 ppm (Carbon Dioxide)
+    - 9: SO2 ppm (Sulfur Dioxide)
+    - 10: O3 ppm (Ozone)
     
     Args:
         parameter_id: ID del parámetro a consultar (1, 2, 7, 8, 9, 10)
@@ -205,7 +204,7 @@ async def get_measurements_by_parameter(
         raise HTTPException(
             status_code=400,
             detail=f"Invalid parameter ID. Must be one of: {valid_parameters}. "
-                   f"(1=PM10, 2=PM2.5, 7=NO2, 8=CO, 9=SO2, 10=O3)"
+                   f"(1=PM10, 2=PM2.5, 7=NO2, 8=CO2, 9=SO2, 10=O3)"
         )
     
     try:
@@ -252,44 +251,46 @@ async def get_measurements_by_location(
 async def get_measurements_by_location_name(
     location_name: str = Query(
         ...,
-        description="Nombre de la ubicación a buscar (búsqueda parcial, insensible a mayúsculas)"
+        description="Nombre de la ubicación a buscar (puede ser parcial, case insensitive)"
     ),
-    state: Optional[str] = Query(
-        None,
-        description="Estado de USA donde buscar (ej: 'colorado', 'new_york', 'california'). Si no se especifica, busca en todo USA"
-    ),
-    bbox: Optional[str] = Query(
-        None,
-        description="[Opcional] Área de búsqueda personalizada en formato bbox (min_lon,min_lat,max_lon,max_lat)"
+    bbox: str = Query(
+        "-109.05,37,-102.04,41",
+        description="Área de búsqueda (default: Colorado). Formato: min_lon,min_lat,max_lon,max_lat"
     )
 ):
     """
-    Buscar ubicación por nombre y obtener todas las mediciones de contaminación
+    🆕 API 2: Buscar ubicación por nombre y obtener todas las mediciones de contaminación
     
-    **NUEVO: Ya no necesitas especificar bbox!**
+    Esta API:
+    1. Busca ubicaciones en el área especificada (bbox)
+    2. Filtra por el nombre proporcionado
+    3. Devuelve TODAS las mediciones de contaminación de esa ubicación
     
-    Ejemplos de uso simplificado:
-    - `/measurements/by-location-name?location_name=Denver` → Busca en todo USA
-    - `/measurements/by-location-name?location_name=New York&state=new_york` → Busca solo en NY
-    - `/measurements/by-location-name?location_name=Los Angeles&state=california` → Busca en CA
-    
-    Estados disponibles:
-    - colorado, california, new_york, texas, florida, washington, illinois,
-    - pennsylvania, ohio, michigan, entire_us (todo USA, es el default)
-    
-    Parámetros de contaminación devueltos: PM10, PM2.5, NO2, CO, SO2, O3
-    
-    Cada parámetro incluye:
-    - latest_value: Último valor medido
-    - unit: Unidad de medida
-    - datetime: Fecha y hora de la medición
-    - all_measurements: Array con los últimos 10 valores históricos
+    Args:
+        location_name: Nombre de la ubicación a buscar (ej: "Downtown", "Denver", "Station 5")
+        bbox: Coordenadas del área de búsqueda (default: área de Colorado)
+        
+    Returns:
+        JSON con:
+        - found: Si se encontró la ubicación
+        - location_id, location_name, locality, coordinates: Información de la ubicación
+        - measurements: Diccionario con mediciones de cada tipo de contaminación:
+            - pm10, pm25, no2, co2, so2, o3
+            - Cada uno incluye: valor más reciente, unidad, timestamp, historial
+        
+    Ejemplos de bbox útiles:
+        - Colorado: -109.05,37,-102.04,41
+        - USA Continental: -125.0,24.0,-66.0,49.0
+        - California: -124.4,32.5,-114.1,42.0
+        - Texas: -106.6,25.8,-93.5,36.5
+        
+    Ejemplo de uso:
+        GET /air-quality/measurements/by-location-name?location_name=Denver&bbox=-109.05,37,-102.04,41
     """
     try:
         data = await client.search_location_and_get_all_measurements(
             location_name=location_name,
-            bbox=bbox,
-            state=state
+            bbox=bbox
         )
         return data
     except Exception as e:
@@ -299,150 +300,3 @@ async def get_measurements_by_location_name(
         )
 
 
-@router.get("/locations/in-area")
-async def get_all_locations_in_area(
-    bbox: str = Query(
-        ...,
-        description="Área de búsqueda en formato bbox (min_lon,min_lat,max_lon,max_lat)"
-    ),
-    limit: int = Query(
-        1000,
-        description="Número máximo de ubicaciones a obtener de la API",
-        ge=1,
-        le=10000
-    ),
-    max_process: int = Query(
-        100,
-        description="Número máximo de ubicaciones a procesar (limita tiempo de espera)",
-        ge=1,
-        le=200
-    ),
-    sampling: str = Query(
-        "distributed",
-        description="Estrategia de muestreo: 'random', 'distributed', 'first'",
-        regex="^(random|distributed|first)$"
-    )
-):
-    """
-    Obtener ubicaciones de monitoreo con sus mediciones - OPTIMIZADO
-    
-    **Control de tiempo de respuesta:**
-    
-    - `max_process`: Límite de ubicaciones a procesar (default: 100)
-      - 20 ubicaciones: ~5-8 segundos
-      - 50 ubicaciones: ~10-15 segundos
-      - 100 ubicaciones: ~20-30 segundos
-    
-    - `sampling`: Estrategia de selección cuando hay muchas ubicaciones
-      - `distributed` (recomendado): Distribuye uniformemente en el área
-      - `random`: Selección aleatoria
-      - `first`: Toma las primeras N ubicaciones
-    
-    Ejemplos para diferentes estados:
-    - Colorado: `?bbox=-109.05,37,-102.04,41&max_process=50`
-    - California: `?bbox=-124.48,32.53,-114.13,42.01&max_process=100`
-    - New York: `?bbox=-79.76,40.50,-71.86,45.01&max_process=50`
-    - Washington: `?bbox=-124.85,45.54,-116.92,49&max_process=100`
-    """
-    try:
-        data = await client.get_all_locations_in_bbox_with_measurements(
-            bbox=bbox,
-            limit=limit,
-            max_locations_to_process=max_process,
-            sampling_strategy=sampling
-        )
-        return data
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error fetching locations: {str(e)}"
-        )
-
-
-@router.get("/test/washington")
-async def test_washington_state(
-    max_process: int = Query(
-        100,
-        description="Número de ubicaciones a procesar (default: 100)",
-        ge=10,
-        le=200
-    ),
-    sampling: str = Query(
-        "distributed",
-        description="Estrategia: 'distributed', 'random', 'first'",
-        regex="^(random|distributed|first)$"
-    )
-):
-    """
-    🧪 ENDPOINT DE TEST: Washington State
-    
-    Prueba la API optimizada con el estado de Washington.
-    
-    **NOTA:** Tests grandes (100+ ubicaciones) pueden tardar 30-60 segundos.
-    
-    Configuraciones de prueba:
-    - Rápida (20 loc): `/test/washington?max_process=20` (~5-10s)
-    - Media (50 loc): `/test/washington?max_process=50` (~15-20s)
-    - Completa (100 loc): `/test/washington?max_process=100` (~30-40s)
-    
-    Compara diferentes estrategias:
-    - Distribuido: `?max_process=50&sampling=distributed`
-    - Aleatorio: `?max_process=50&sampling=random`
-    - Primeros: `?max_process=50&sampling=first`
-    """
-    import time
-    
-    # Bbox de Washington State
-    washington_bbox = "-124.85,45.54,-116.92,49"
-    
-    start_time = time.time()
-    
-    try:
-        data = await client.get_all_locations_in_bbox_with_measurements(
-            bbox=washington_bbox,
-            limit=1000,
-            max_locations_to_process=max_process,
-            sampling_strategy=sampling
-        )
-        
-        elapsed_time = time.time() - start_time
-        
-        # Agregar métricas de performance
-        successful = data.get('successful_locations', data.get('locations_processed', 0))
-        failed = data.get('failed_locations', 0)
-        
-        data["performance"] = {
-            "total_time_seconds": round(elapsed_time, 2),
-            "locations_per_second": round(successful / elapsed_time, 2) if elapsed_time > 0 and successful > 0 else 0,
-            "average_time_per_location_ms": round((elapsed_time / successful) * 1000, 2) if successful > 0 else 0,
-            "successful_locations": successful,
-            "failed_locations": failed
-        }
-        
-        # Agregar estadísticas de cobertura
-        if data.get("found"):
-            locations = data.get("locations", [])
-            
-            # Calcular estadísticas de parámetros (solo de ubicaciones exitosas)
-            param_stats = {param: 0 for param in client.PARAMETERS.keys()}
-            for loc in locations:
-                if "error" not in loc:  # Solo contar ubicaciones sin error
-                    for param, measurement in loc.get("measurements", {}).items():
-                        if measurement.get("available"):
-                            param_stats[param] += 1
-            
-            data["parameter_coverage"] = {
-                param: {
-                    "available_at": count,
-                    "percentage": f"{(count / successful * 100):.1f}%" if successful > 0 else "0%"
-                }
-                for param, count in param_stats.items()
-            }
-        
-        return data
-        
-    except Exception as e:
-        raise HTTPException(
-            status_code=500,
-            detail=f"Error testing Washington: {str(e)}"
-        )

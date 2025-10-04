@@ -4,7 +4,6 @@ OpenAQ API Client for fetching air quality data
 import httpx
 import os
 import asyncio
-import random
 from pathlib import Path
 from typing import List, Optional, Dict, Any
 from dotenv import load_dotenv
@@ -21,12 +20,12 @@ class OpenAQClient:
     
     # Parameter IDs according to OpenAQ
     PARAMETERS = {
-        "pm10": 1,    # Particulate Matter 10 micrometers (µg/m³)
-        "pm25": 2,    # Particulate Matter 2.5 micrometers (µg/m³)
-        "no2": 7,     # Nitrogen Dioxide (ppm)
-        "co": 8,      # Carbon Monoxide (ppm)
-        "so2": 9,     # Sulfur Dioxide (ppm)
-        "o3": 10      # Ozone (ppm)
+        "pm10": 1,
+        "pm25": 2,
+        "no2": 7,
+        "co2": 8,
+        "so2": 9,
+        "o3": 10
     }
     
     def __init__(self, api_key: Optional[str] = None, timeout: float = 30.0):
@@ -49,206 +48,6 @@ class OpenAQClient:
             headers["X-API-Key"] = self.api_key
         return headers
     
-    def _distribute_locations(
-        self, 
-        locations: List[Dict], 
-        max_count: int,
-        bbox: str
-    ) -> List[Dict]:
-        """
-        Distribuir ubicaciones de forma más uniforme en el área geográfica
-        
-        Args:
-            locations: Lista de ubicaciones
-            max_count: Número máximo de ubicaciones a seleccionar
-            bbox: Bounding box en formato "min_lon,min_lat,max_lon,max_lat"
-            
-        Returns:
-            Lista de ubicaciones seleccionadas de forma distribuida
-        """
-        # Parsear bbox
-        try:
-            min_lon, min_lat, max_lon, max_lat = map(float, bbox.split(','))
-        except:
-            # Si falla el parsing, hacer muestreo aleatorio
-            return random.sample(locations, min(max_count, len(locations)))
-        
-        # Calcular tamaño del grid (e.g., 100 ubicaciones -> grid de 11x11)
-        grid_size = int(max_count ** 0.5) + 1
-        lon_step = (max_lon - min_lon) / grid_size
-        lat_step = (max_lat - min_lat) / grid_size
-        
-        # Crear celdas de grid
-        grid = {}
-        for loc in locations:
-            coords = loc.get("coordinates", {})
-            if not coords:
-                continue
-            
-            lon = coords.get("longitude")
-            lat = coords.get("latitude")
-            
-            if lon is None or lat is None:
-                continue
-            
-            # Determinar celda del grid
-            cell_x = int((lon - min_lon) / lon_step) if lon_step > 0 else 0
-            cell_y = int((lat - min_lat) / lat_step) if lat_step > 0 else 0
-            cell_key = (cell_x, cell_y)
-            
-            if cell_key not in grid:
-                grid[cell_key] = []
-            grid[cell_key].append(loc)
-        
-        # Seleccionar ubicaciones de forma distribuida
-        selected = []
-        cells_with_data = list(grid.values())
-        
-        # Primero tomar una ubicación de cada celda
-        for cell_locations in cells_with_data:
-            if len(selected) >= max_count:
-                break
-            selected.append(random.choice(cell_locations))
-        
-        # Si aún hay espacio, agregar más aleatoriamente
-        if len(selected) < max_count:
-            remaining_locations = [
-                loc for cell in cells_with_data 
-                for loc in cell 
-                if loc not in selected
-            ]
-            additional_needed = min(max_count - len(selected), len(remaining_locations))
-            if additional_needed > 0:
-                selected.extend(random.sample(remaining_locations, additional_needed))
-        
-        return selected
-    
-    async def _process_locations_concurrently(
-        self,
-        locations: List[Dict],
-        max_concurrent: int = 10
-    ) -> List[Dict]:
-        """
-        Procesar ubicaciones de forma concurrente pero limitada con mejor manejo de errores
-        """
-        semaphore = asyncio.Semaphore(max_concurrent)
-        
-        async def process_one_location(location: Dict) -> Dict:
-            async with semaphore:
-                location_id = location.get("id")
-                
-                location_info = {
-                    "location_id": location_id,
-                    "name": location.get("name"),
-                    "locality": location.get("locality"),
-                    "coordinates": location.get("coordinates"),
-                    "country": location.get("country", {}).get("name"),
-                    "measurements": {}
-                }
-                
-                try:
-                    async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
-                        # Step 1: Get location info with sensor mapping
-                        location_info_response = await client.get(
-                            f"{self.BASE_URL}/locations/{location_id}",
-                            headers=self._get_headers()
-                        )
-                        location_info_response.raise_for_status()
-                        location_info_data = location_info_response.json()
-                        location_details = location_info_data.get("results", [{}])[0]
-                        
-                        # Create mapping: sensor_id -> parameter_id
-                        sensor_to_param = {}
-                        for sensor in location_details.get("sensors", []):
-                            sensor_id = sensor.get("id")
-                            param_info = sensor.get("parameter", {})
-                            param_id = param_info.get("id")
-                            if sensor_id and param_id:
-                                sensor_to_param[sensor_id] = {
-                                    "parameter_id": param_id,
-                                    "units": param_info.get("units", "N/A")
-                                }
-                        
-                        # Step 2: Get latest measurements
-                        measurements_response = await client.get(
-                            f"{self.BASE_URL}/locations/{location_id}/latest",
-                            headers=self._get_headers()
-                        )
-                        measurements_response.raise_for_status()
-                        location_data = measurements_response.json()
-                        
-                        measurements_list = location_data.get("results", [])
-                        param_id_to_name = {v: k for k, v in self.PARAMETERS.items()}
-                        
-                        # OPTIMIZADO: Solo agregar mediciones disponibles (no inicializar las no disponibles)
-                        # Fill in the available measurements
-                        for measurement in measurements_list:
-                            sensor_id = measurement.get("sensorsId")
-                            sensor_info = sensor_to_param.get(sensor_id)
-                            if not sensor_info:
-                                continue
-                                
-                            param_id = sensor_info["parameter_id"]
-                            param_name = param_id_to_name.get(param_id)
-                            
-                            if param_name:
-                                location_info["measurements"][param_name] = {
-                                    "parameter_id": param_id,
-                                    "parameter_name": param_name.upper(),
-                                    "latest_value": measurement.get("value"),
-                                    "unit": sensor_info["units"],
-                                    "datetime": measurement.get("datetime", {}),
-                                    "available": True
-                                }
-                        
-                except asyncio.TimeoutError:
-                    # Timeout específico - marcar como error pero no agregar measurements vacías
-                    location_info["error"] = "Request timeout"
-                    
-                except httpx.HTTPError as e:
-                    # Errores HTTP específicos - marcar como error pero no agregar measurements vacías
-                    location_info["error"] = f"HTTP Error: {str(e)}"
-                    
-                except Exception as e:
-                    # Otros errores - marcar como error pero no agregar measurements vacías
-                    location_info["error"] = f"Unexpected error: {str(e)}"
-                
-                # Calculate summary statistics
-                available_measurements = len(location_info["measurements"])
-                location_info["measurements_summary"] = {
-                    "total_parameters": len(self.PARAMETERS),
-                    "available_parameters": available_measurements,
-                    "missing_parameters": len(self.PARAMETERS) - available_measurements
-                }
-                
-                return location_info
-        
-        # Procesar todas las ubicaciones concurrentemente
-        tasks = [process_one_location(loc) for loc in locations]
-        results = await asyncio.gather(*tasks, return_exceptions=True)
-        
-        # Filtrar errores y convertir excepciones en respuestas válidas
-        processed_results = []
-        for i, result in enumerate(results):
-            if isinstance(result, Exception):
-                # Si hubo una excepción no capturada, crear una respuesta de error
-                location = locations[i]
-                processed_results.append({
-                    "location_id": location.get("id"),
-                    "name": location.get("name"),
-                    "error": f"Processing failed: {str(result)}",
-                    "measurements": {},  # OPTIMIZADO: Vacío en lugar de agregar parámetros no disponibles
-                    "measurements_summary": {
-                        "total_parameters": len(self.PARAMETERS),
-                        "available_parameters": 0,
-                        "missing_parameters": len(self.PARAMETERS)
-                    }
-                })
-            else:
-                processed_results.append(result)
-        
-        return processed_results
-
     async def get_latest_measurements(
         self,
         parameter_id: int,
@@ -262,7 +61,7 @@ class OpenAQClient:
         Get latest measurements for a specific parameter
         
         Args:
-            parameter_id: Parameter ID (1=pm10, 2=pm25, 7=NO2, 8=CO, 9=SO2, 10=O3)
+            parameter_id: Parameter ID (1=pm10, 2=pm2.5, 7=NO2, 8=CO2, 9=SO2, 10=O3)
             country: Country code (default: US)
             limit: Maximum number of results to return (after filtering)
             state: Optional state filter (applied client-side)
@@ -411,112 +210,27 @@ class OpenAQClient:
         
         return results
 
-    # Common bounding boxes for US regions (all 50 states + DC)
-    US_BBOXES = {
-        # Contiguous United States
-        "alabama": "-88.47,30.22,-84.89,35.01",
-        "arizona": "-114.82,31.33,-109.05,37.00",
-        "arkansas": "-94.62,33.00,-89.64,36.50",
-        "california": "-124.48,32.53,-114.13,42.01",
-        "colorado": "-109.05,37.00,-102.04,41.00",
-        "connecticut": "-73.73,40.98,-71.79,42.05",
-        "delaware": "-75.79,38.45,-75.05,39.84",
-        "florida": "-87.63,24.52,-80.03,31.00",
-        "georgia": "-85.61,30.36,-80.84,35.00",
-        "idaho": "-117.24,41.99,-111.04,49.00",
-        "illinois": "-91.51,36.97,-87.02,42.51",
-        "indiana": "-88.10,37.77,-84.78,41.76",
-        "iowa": "-96.64,40.38,-90.14,43.50",
-        "kansas": "-102.05,36.99,-94.59,40.00",
-        "kentucky": "-89.57,36.50,-81.96,39.15",
-        "louisiana": "-94.04,28.93,-88.82,33.02",
-        "maine": "-71.08,43.06,-66.95,47.46",
-        "maryland": "-79.49,37.97,-75.05,39.72",
-        "massachusetts": "-73.51,41.24,-69.93,42.89",
-        "michigan": "-90.42,41.70,-82.12,48.31",
-        "minnesota": "-97.24,43.50,-89.49,49.38",
-        "mississippi": "-91.66,30.17,-88.10,35.00",
-        "missouri": "-95.77,35.99,-89.10,40.61",
-        "montana": "-116.05,44.36,-104.04,49.00",
-        "nebraska": "-104.05,40.00,-95.31,43.00",
-        "nevada": "-120.01,35.00,-114.04,42.00",
-        "new_hampshire": "-72.56,42.70,-70.61,45.31",
-        "new_jersey": "-75.56,38.93,-73.89,41.36",
-        "new_mexico": "-109.05,31.33,-103.00,37.00",
-        "new_york": "-79.76,40.50,-71.86,45.01",
-        "north_carolina": "-84.32,33.84,-75.46,36.59",
-        "north_dakota": "-104.05,45.94,-96.55,49.00",
-        "ohio": "-84.82,38.40,-80.52,42.32",
-        "oklahoma": "-103.00,33.62,-94.43,37.00",
-        "oregon": "-124.57,41.99,-116.46,46.29",
-        "pennsylvania": "-80.52,39.72,-74.69,42.27",
-        "rhode_island": "-71.91,41.15,-71.12,42.02",
-        "south_carolina": "-83.35,32.03,-78.54,35.22",
-        "south_dakota": "-104.06,42.48,-96.44,45.94",
-        "tennessee": "-90.31,34.98,-81.65,36.68",
-        "texas": "-106.65,25.84,-93.51,36.50",
-        "utah": "-114.05,37.00,-109.04,42.00",
-        "vermont": "-73.44,42.73,-71.46,45.02",
-        "virginia": "-83.68,36.54,-75.24,39.47",
-        "washington": "-124.85,45.54,-116.92,49.00",
-        "west_virginia": "-82.64,37.20,-77.72,40.64",
-        "wisconsin": "-92.89,42.49,-86.25,47.31",
-        "wyoming": "-111.06,40.99,-104.05,45.01",
-        # Non-contiguous states
-        "alaska": "-179.15,51.21,179.78,71.44",
-        "hawaii": "-160.25,18.91,-154.81,22.23",
-        # District of Columbia
-        "dc": "-77.12,38.79,-76.91,38.99",
-        "district_of_columbia": "-77.12,38.79,-76.91,38.99",
-        # Entire US
-        "entire_us": "-125.0,24.0,-66.0,49.0",  # Continental USA
-        "all_states": "-179.15,18.91,179.78,71.44"  # All 50 states including AK and HI
-    }
-    
     async def search_location_and_get_all_measurements(
         self,
         location_name: str,
-        bbox: Optional[str] = None,
-        state: Optional[str] = None
+        bbox: str = "-109.05,37,-102.04,41"
     ) -> Dict[str, Any]:
         """
         Search for a location by name and get all pollution measurements
         
         Args:
             location_name: Name of the location to search for (case insensitive, partial match)
-            bbox: Optional bounding box (if not provided, will search entire US or use state bbox)
-            state: Optional state name (e.g., "colorado", "new_york") - uses predefined bbox for that state
+            bbox: Bounding box to search within (default: Colorado area)
             
         Returns:
             Dictionary with location info and all parameter measurements
         """
-        # Determine which bbox to use
-        search_bbox = bbox
-        
-        if not search_bbox and state:
-            # Use predefined state bbox
-            state_key = state.lower().replace(" ", "_")
-            search_bbox = self.US_BBOXES.get(state_key)
-            if not search_bbox:
-                return {
-                    "found": False,
-                    "message": f"State '{state}' not found in predefined regions. Available: {', '.join(self.US_BBOXES.keys())}",
-                    "search_criteria": {
-                        "location_name": location_name,
-                        "state": state
-                    }
-                }
-        
-        if not search_bbox:
-            # Default to entire US
-            search_bbox = self.US_BBOXES["entire_us"]
-        
         # Get locations using bbox parameter (OpenAQ v3 supports this!)
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             # Get locations within the bounding box
             locations_response = await client.get(
                 f"{self.BASE_URL}/locations",
-                params={"limit": 1000, "bbox": search_bbox},
+                params={"limit": 1000, "bbox": bbox},
                 headers=self._get_headers()
             )
             locations_response.raise_for_status()
@@ -543,8 +257,7 @@ class OpenAQClient:
                 "message": f"No location found matching '{location_name}' in the specified area",
                 "search_criteria": {
                     "location_name": location_name,
-                    "bbox": search_bbox,
-                    "state": state if state else "entire_us"
+                    "bbox": bbox
                 },
                 "total_locations_searched": len(all_locations)
             }
@@ -576,84 +289,65 @@ class OpenAQClient:
                 for loc in matching_locations[1:6]  # Show up to 5 other matches
             ]
         
-        # Fetch measurements for all parameters using /locations/{id} endpoint first
-        # to get sensor mapping, then /locations/{id}/latest for actual values
+        # Fetch measurements for all parameters (create new client context)
         async with httpx.AsyncClient(timeout=self.timeout) as client:
-            try:
-                # Step 1: Get location info with sensor mapping
-                location_info_response = await client.get(
-                    f"{self.BASE_URL}/locations/{location_id}",
-                    headers=self._get_headers()
-                )
-                location_info_response.raise_for_status()
-                location_info_data = location_info_response.json()
-                location_details = location_info_data.get("results", [{}])[0]
-                
-                # Create mapping: sensor_id -> parameter_id
-                sensor_to_param = {}
-                for sensor in location_details.get("sensors", []):
-                    sensor_id = sensor.get("id")
-                    param_info = sensor.get("parameter", {})
-                    param_id = param_info.get("id")
-                    if sensor_id and param_id:
-                        sensor_to_param[sensor_id] = {
-                            "parameter_id": param_id,
-                            "units": param_info.get("units", "N/A")
-                        }
-                
-                # Step 2: Get ALL latest measurements for this specific location
-                measurements_response = await client.get(
-                    f"{self.BASE_URL}/locations/{location_id}/latest",
-                    headers=self._get_headers()
-                )
-                measurements_response.raise_for_status()
-                location_data = measurements_response.json()
-                
-                measurements_list = location_data.get("results", [])
-                
-                # Create a map of parameterId -> measurement data using sensor mapping
-                param_id_to_name = {v: k for k, v in self.PARAMETERS.items()}
-                
-                # Initialize all parameters as not available
-                for param_name in self.PARAMETERS.keys():
-                    results["measurements"][param_name] = {
-                        "parameter_id": self.PARAMETERS[param_name],
-                        "parameter_name": param_name.upper(),
-                        "available": False,
-                        "message": "No measurements available for this parameter"
-                    }
-                
-                # Fill in the available measurements using sensor mapping
-                for measurement in measurements_list:
-                    sensor_id = measurement.get("sensorsId")
+            # Define async function to fetch one parameter
+            async def fetch_parameter(param_name: str, param_id: int):
+                try:
+                    # Get latest measurements for this parameter
+                    measurements_response = await client.get(
+                        f"{self.BASE_URL}/parameters/{param_id}/latest",
+                        params={"locations_id": location_id, "limit": 100},
+                        headers=self._get_headers()
+                    )
+                    measurements_response.raise_for_status()
+                    param_data = measurements_response.json()
                     
-                    # Get parameter info from sensor mapping
-                    sensor_info = sensor_to_param.get(sensor_id)
-                    if not sensor_info:
-                        continue
+                    measurements_list = param_data.get("results", [])
+                    
+                    if measurements_list:
+                        # Get the latest measurement
+                        latest = measurements_list[0]
                         
-                    param_id = sensor_info["parameter_id"]
-                    param_name = param_id_to_name.get(param_id)
-                    
-                    if param_name:
-                        results["measurements"][param_name] = {
+                        return (param_name, {
                             "parameter_id": param_id,
                             "parameter_name": param_name.upper(),
-                            "latest_value": measurement.get("value"),
-                            "unit": sensor_info["units"],
-                            "datetime": measurement.get("datetime", {}),
-                            "available": True
-                        }
-                
-            except httpx.HTTPError as e:
-                # If fetching fails, mark all parameters as unavailable
-                for param_name, param_id in self.PARAMETERS.items():
-                    results["measurements"][param_name] = {
+                            "latest_value": latest.get("value"),
+                            "unit": latest.get("parameter", {}).get("units", "N/A"),
+                            "datetime": latest.get("datetime", {}),
+                            "total_measurements_available": len(measurements_list),
+                            "available": True,
+                            "all_measurements": [
+                                {
+                                    "value": m.get("value"),
+                                    "datetime": m.get("datetime", {}).get("utc")
+                                }
+                                for m in measurements_list[:10]  # Include last 10 measurements
+                            ]
+                        })
+                    else:
+                        return (param_name, {
+                            "parameter_id": param_id,
+                            "parameter_name": param_name.upper(),
+                            "available": False,
+                            "message": "No measurements available for this parameter"
+                        })
+                        
+                except httpx.HTTPError as e:
+                    return (param_name, {
                         "parameter_id": param_id,
                         "parameter_name": param_name.upper(),
                         "available": False,
                         "error": f"Could not fetch data: {str(e)}"
-                    }
+                    })
+            
+            # Fetch all parameters concurrently
+            tasks = [fetch_parameter(param_name, param_id) for param_name, param_id in self.PARAMETERS.items()]
+            param_results = await asyncio.gather(*tasks)
+            
+            # Add results to the measurements dict
+            for param_name, param_data in param_results:
+                results["measurements"][param_name] = param_data
         
         return results
 
@@ -712,7 +406,7 @@ class OpenAQClient:
         Get all measurements for a specific pollution parameter
         
         Args:
-            parameter_id: Parameter ID (1=pm10, 2=pm25, 7=NO2, 8=CO, 9=SO2, 10=O3)
+            parameter_id: Parameter ID (1=pm10, 2=pm2.5, 7=NO2, 8=CO2, 9=SO2, 10=O3)
             bbox: Bounding box for geographic filter (default: Colorado area)
             limit: Maximum number of results
             
@@ -828,87 +522,3 @@ class OpenAQClient:
                     }
         
         return results
-
-    async def get_all_locations_in_bbox_with_measurements(
-        self,
-        bbox: str,
-        limit: int = 1000,
-        max_locations_to_process: int = 100,
-        sampling_strategy: str = "distributed"
-    ) -> Dict[str, Any]:
-        """
-        Get all monitoring locations within a bounding box with their pollution measurements
-        OPTIMIZADO: Con límite de ubicaciones y procesamiento concurrente
-        """
-        try:
-            # Get all locations within the bounding box
-            async with httpx.AsyncClient(timeout=httpx.Timeout(30.0, connect=10.0)) as client:
-                locations_response = await client.get(
-                    f"{self.BASE_URL}/locations",
-                    params={"limit": limit, "bbox": bbox},
-                    headers=self._get_headers()
-                )
-                locations_response.raise_for_status()
-                locations_data = locations_response.json()
-            
-            all_locations = locations_data.get("results", [])
-            
-            if not all_locations:
-                return {
-                    "found": False,
-                    "message": "No monitoring locations found in the specified area",
-                    "bbox": bbox,
-                    "total_locations": 0,
-                    "locations": []
-                }
-            
-            # Seleccionar ubicaciones según estrategia
-            total_found = len(all_locations)
-            
-            if len(all_locations) > max_locations_to_process:
-                if sampling_strategy == "random":
-                    selected_locations = random.sample(all_locations, max_locations_to_process)
-                elif sampling_strategy == "distributed":
-                    selected_locations = self._distribute_locations(all_locations, max_locations_to_process, bbox)
-                else:  # "first"
-                    selected_locations = all_locations[:max_locations_to_process]
-            else:
-                selected_locations = all_locations
-            
-            # Procesar ubicaciones con concurrencia limitada (reducido a 5 para más estabilidad)
-            locations_with_measurements = await self._process_locations_concurrently(
-                selected_locations,
-                max_concurrent=5  # REDUCIDO de 10 a 5 para mejor estabilidad
-            )
-            
-            # Contar errores
-            locations_with_errors = sum(1 for loc in locations_with_measurements if "error" in loc)
-            successful_locations = len(locations_with_measurements) - locations_with_errors
-            
-            return {
-                "found": True,
-                "bbox": bbox,
-                "total_locations_found": total_found,
-                "locations_processed": len(locations_with_measurements),
-                "successful_locations": successful_locations,
-                "failed_locations": locations_with_errors,
-                "sampling_info": {
-                    "strategy": sampling_strategy,
-                    "max_requested": max_locations_to_process,
-                    "actually_processed": len(locations_with_measurements),
-                    "percentage_covered": f"{(len(locations_with_measurements) / total_found * 100):.1f}%"
-                },
-                "locations": locations_with_measurements,
-                "summary": {
-                    "total_locations_found": total_found,
-                    "parameters_monitored": list(self.PARAMETERS.keys())
-                }
-            }
-            
-        except Exception as e:
-            return {
-                "found": False,
-                "error": str(e),
-                "message": f"Error processing locations: {str(e)}",
-                "bbox": bbox
-            }
