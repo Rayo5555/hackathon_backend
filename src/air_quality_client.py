@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from typing import List, Dict, Optional, Any
 from pathlib import Path
 import os
+from dotenv import load_dotenv
 
 import httpx
 from fastapi import HTTPException
@@ -15,6 +16,9 @@ from src.schemas import (
     AirNowCurrentObservation, OpenAQMeasurement,
     APIResponse, DataExtractionStatus
 )
+
+# Cargar variables de entorno
+load_dotenv()
 
 # Configurar logging
 logging.basicConfig(level=logging.INFO)
@@ -31,6 +35,12 @@ class AirQualityAPIClient:
         self.airnow_base_url = "https://www.airnowapi.org/aq"
         self.data_dir = Path("data/air_quality")
         self.data_dir.mkdir(parents=True, exist_ok=True)
+        
+        # Debug: Verificar API keys
+        logger.info(f"OpenAQ API Key configured: {'Yes' if self.openaq_api_key else 'No'}")
+        logger.info(f"AirNow API Key configured: {'Yes' if self.airnow_api_key else 'No'}")
+        if self.openaq_api_key:
+            logger.info(f"OpenAQ API Key length: {len(self.openaq_api_key)} characters")
         
         # Headers para OpenAQ API v3
         headers = {}
@@ -212,62 +222,95 @@ class AirQualityAPIClient:
         
         try:
             url = f"{self.openaq_base_url}/measurements"
-            params = {
-                "limit": min(limit, 100),  # API v3 tiene límites más estrictos
+            
+            # Parámetros base para la API v3
+            base_params = {
+                "limit": min(limit, 1000),  # API v3 permite hasta 1000
                 "page": 1,
                 "sort_order": "desc",
-                "countries_id": 840,  # ID de Estados Unidos en OpenAQ v3
-                "order_by": "datetime"
+                "order_by": "datetime",
+                "date_from": (datetime.utcnow() - timedelta(days=1)).strftime("%Y-%m-%d"),  # Últimas 24 horas
+                "date_to": datetime.utcnow().strftime("%Y-%m-%d")
             }
             
-            # Filtros geográficos para v3
+            # Si se especifican coordenadas, usarlas
             if coordinates:
-                params.update({
+                base_params.update({
                     "coordinates": f"{coordinates.latitude},{coordinates.longitude}",
                     "radius": radius
                 })
+            else:
+                # Sin coordenadas específicas, buscar en EE.UU.
+                base_params["countries_id"] = 840  # ID de Estados Unidos
             
-            # En la API v3, los parámetros se especifican de forma diferente
-            target_parameters = ["o3", "no2", "pm25", "pm10", "so2", "co"]
+            # Intentar obtener datos para diferentes parámetros
+            target_parameters = [
+                ("pm25", 2),   # PM2.5 
+                ("pm10", 1),   # PM10
+                ("no2", 8),    # Nitrogen dioxide  
+                ("o3", 7),     # Ozone
+                ("so2", 21),   # Sulfur dioxide
+                ("co", 6)      # Carbon monoxide
+            ]
             
-            for parameter in target_parameters:
+            for param_name, param_id in target_parameters:
                 try:
-                    # API v3 usa parameters_id en lugar de parameter
-                    param_params = params.copy()
-                    param_params["parameters_id"] = self._get_parameter_id(parameter)
+                    # Parámetros específicos para este contaminante
+                    params = base_params.copy()
+                    params["parameters_id"] = param_id
                     
-                    if not param_params["parameters_id"]:
+                    logger.info(f"Requesting OpenAQ data for {param_name} (ID: {param_id})")
+                    logger.debug(f"Request URL: {url}")
+                    logger.debug(f"Request params: {params}")
+                    
+                    response = await self.client.get(url, params=params)
+                    
+                    # Log de la respuesta
+                    logger.info(f"OpenAQ response status for {param_name}: {response.status_code}")
+                    
+                    if response.status_code == 401:
+                        logger.error("OpenAQ API key is invalid or expired")
+                        break
+                    elif response.status_code == 429:
+                        logger.warning("OpenAQ API rate limit exceeded, waiting...")
+                        await asyncio.sleep(5)
                         continue
-                    
-                    response = await self.client.get(url, params=param_params)
-                    response.raise_for_status()
+                    elif response.status_code != 200:
+                        logger.warning(f"OpenAQ API returned status {response.status_code} for {param_name}")
+                        continue
                     
                     data = response.json()
                     results = data.get("results", [])
                     
-                    logger.info(f"OpenAQ API v3 returned {len(results)} measurements for {parameter}")
+                    logger.info(f"OpenAQ API v3 returned {len(results)} measurements for {param_name}")
                     
+                    if len(results) == 0:
+                        logger.warning(f"No results found for {param_name}")
+                        continue
+                    
+                    # Procesar cada resultado
                     for result in results:
                         try:
-                            # Procesar respuesta de API v3
-                            measurement = self._parse_openaq_v3_measurement(result, parameter)
+                            measurement = self._parse_openaq_v3_measurement(result, param_name)
                             if measurement:
                                 measurements.append(measurement)
                             
                         except Exception as e:
-                            logger.warning(f"Error processing OpenAQ v3 measurement: {e}")
+                            logger.warning(f"Error processing OpenAQ v3 measurement for {param_name}: {e}")
                             continue
-                            
-                    # Pequeña pausa entre requests para ser respetuosos con la API
-                    await asyncio.sleep(0.2)
+                    
+                    # Pausa respetuosa entre requests
+                    await asyncio.sleep(1)
                     
                 except httpx.HTTPStatusError as e:
-                    logger.error(f"OpenAQ API v3 HTTP error for {parameter}: {e}")
+                    logger.error(f"OpenAQ API v3 HTTP error for {param_name}: {e}")
                     if e.response.status_code == 401:
                         logger.error("API key is invalid or expired")
                         break
                 except Exception as e:
-                    logger.error(f"Error fetching OpenAQ v3 data for {parameter}: {e}")
+                    logger.error(f"Error fetching OpenAQ v3 data for {param_name}: {e}")
+            
+            logger.info(f"Total OpenAQ measurements collected: {len(measurements)}")
             
         except Exception as e:
             logger.error(f"Error in OpenAQ v3 data extraction: {e}")
@@ -292,58 +335,106 @@ class AirQualityAPIClient:
         try:
             pollutant = self._convert_pollutant_name(parameter, DataSource.OPENAQ)
             if not pollutant:
+                logger.debug(f"Unable to convert parameter: {parameter}")
                 return None
             
-            # Procesar coordenadas (estructura puede variar en v3)
+            # Obtener valor y unidad
+            value = result.get("value")
+            if value is None:
+                logger.debug("No value found in measurement")
+                return None
+            
+            unit = result.get("unit", "")
+            
+            # Procesar coordenadas - OpenAQ v3 puede tener diferentes estructuras
             coordinates_data = result.get("coordinates", {})
-            if not coordinates_data:
+            if not coordinates_data and "location" in result:
                 # Intentar obtener de location
                 location_data = result.get("location", {})
                 coordinates_data = location_data.get("coordinates", {})
             
             if not coordinates_data:
+                # Último intento: buscar lat/lon directamente
+                if "latitude" in result and "longitude" in result:
+                    coordinates_data = {
+                        "latitude": result["latitude"],
+                        "longitude": result["longitude"]
+                    }
+            
+            if not coordinates_data or "latitude" not in coordinates_data:
+                logger.debug(f"No valid coordinates found for measurement: {result}")
                 return None
             
             coords = Coordinates(
-                latitude=coordinates_data.get("latitude", 0.0),
-                longitude=coordinates_data.get("longitude", 0.0)
+                latitude=float(coordinates_data.get("latitude", 0.0)),
+                longitude=float(coordinates_data.get("longitude", 0.0))
             )
             
-            # Procesar fecha (estructura puede haber cambiado en v3)
-            datetime_str = result.get("datetime", result.get("date", {}).get("utc"))
-            if isinstance(datetime_str, str):
+            # Validar coordenadas
+            if coords.latitude == 0.0 and coords.longitude == 0.0:
+                logger.debug("Invalid coordinates (0,0)")
+                return None
+            
+            # Procesar fecha y hora
+            datetime_str = result.get("datetime") or result.get("date", {}).get("utc")
+            timestamp = datetime.utcnow()  # Default
+            
+            if datetime_str:
                 try:
-                    # Intentar varios formatos
-                    if "T" in datetime_str:
-                        timestamp = datetime.fromisoformat(datetime_str.replace("Z", "+00:00"))
+                    if isinstance(datetime_str, str):
+                        # Manejar diferentes formatos de fecha
+                        if "T" in datetime_str:
+                            datetime_str = datetime_str.replace("Z", "+00:00")
+                            timestamp = datetime.fromisoformat(datetime_str)
+                        else:
+                            timestamp = datetime.fromisoformat(datetime_str)
                     else:
-                        timestamp = datetime.fromisoformat(datetime_str)
-                except:
-                    timestamp = datetime.utcnow()
-            else:
-                timestamp = datetime.utcnow()
+                        # Si es un dict con formato de fecha
+                        utc_date = datetime_str.get("utc") if isinstance(datetime_str, dict) else None
+                        if utc_date:
+                            timestamp = datetime.fromisoformat(utc_date.replace("Z", "+00:00"))
+                except Exception as e:
+                    logger.debug(f"Error parsing datetime '{datetime_str}': {e}")
+                    # Mantener timestamp por defecto
             
             # Obtener información de ubicación
             location_info = result.get("location", {})
-            location_name = location_info.get("name", result.get("location", ""))
+            if isinstance(location_info, str):
+                location_name = location_info
+                city = None
+            elif isinstance(location_info, dict):
+                location_name = location_info.get("name", location_info.get("label", ""))
+                city = location_info.get("city")
+            else:
+                location_name = str(result.get("location", ""))
+                city = None
             
+            # Obtener estado si está disponible
+            state = None
+            if isinstance(location_info, dict):
+                state = location_info.get("state") or location_info.get("region")
+            
+            # Crear la medición
             measurement = AirQualityMeasurement(
                 parameter=pollutant,
-                value=result.get("value", 0.0),
-                unit=result.get("unit", ""),
+                value=float(value),
+                unit=unit,
                 last_updated=timestamp,
                 coordinates=coords,
                 location_name=location_name,
-                city=location_info.get("city"),
+                city=city,
+                state=state,
                 country="US",
                 source=DataSource.OPENAQ,
-                site_id=str(result.get("location_id", result.get("locationId", "")))
+                site_id=str(result.get("location_id", result.get("locationId", result.get("id", ""))))
             )
             
+            logger.debug(f"Successfully parsed measurement: {pollutant.value} = {value} {unit} at ({coords.latitude}, {coords.longitude})")
             return measurement
             
         except Exception as e:
             logger.warning(f"Error parsing OpenAQ v3 measurement: {e}")
+            logger.debug(f"Problematic result: {result}")
             return None
     
     async def extract_all_data(self) -> Dict[str, List[AirQualityMeasurement]]:
@@ -383,37 +474,78 @@ class AirQualityAPIClient:
                     else:
                         logger.error(f"AirNow extraction failed: {result}")
             
-            # Intentar extraer datos de OpenAQ si hay API key
+            # Intentar extraer datos de OpenAQ si hay API key - PRIORIDAD ALTA
             if self.openaq_api_key:
-                logger.info("Attempting to extract OpenAQ data...")
+                logger.info("Attempting to extract OpenAQ data with comprehensive approach...")
+                
+                # Estrategia 1: Datos generales de EE.UU. sin coordenadas específicas
+                try:
+                    general_measurements = await self.get_openaq_measurements(limit=500)
+                    all_measurements["openaq"].extend(general_measurements)
+                    logger.info(f"General US data: {len(general_measurements)} measurements")
+                except Exception as e:
+                    logger.warning(f"General OpenAQ extraction failed: {e}")
+                
+                # Estrategia 2: Ciudades principales de EE.UU.
                 major_cities = [
-                    Coordinates(latitude=40.7128, longitude=-74.0060),  # NYC
-                    Coordinates(latitude=34.0522, longitude=-118.2437), # Los Angeles
-                    Coordinates(latitude=41.8781, longitude=-87.6298),  # Chicago
-                    Coordinates(latitude=29.7604, longitude=-95.3698),  # Houston
+                    ("New York", Coordinates(latitude=40.7128, longitude=-74.0060)),
+                    ("Los Angeles", Coordinates(latitude=34.0522, longitude=-118.2437)),
+                    ("Chicago", Coordinates(latitude=41.8781, longitude=-87.6298)),
+                    ("Houston", Coordinates(latitude=29.7604, longitude=-95.3698)),
+                    ("Phoenix", Coordinates(latitude=33.4484, longitude=-112.0740)),
+                    ("Philadelphia", Coordinates(latitude=39.9526, longitude=-75.1652)),
+                    ("San Antonio", Coordinates(latitude=29.4241, longitude=-98.4936)),
+                    ("San Diego", Coordinates(latitude=32.7157, longitude=-117.1611)),
+                    ("Dallas", Coordinates(latitude=32.7767, longitude=-96.7970)),
+                    ("San Jose", Coordinates(latitude=37.3382, longitude=-121.8863))
                 ]
                 
-                for coord in major_cities:
+                for city_name, coord in major_cities:
                     try:
-                        measurements = await self.get_openaq_measurements(
-                            coordinates=coord, radius=100000
+                        city_measurements = await self.get_openaq_measurements(
+                            coordinates=coord, 
+                            radius=75000,  # 75km radio
+                            limit=200
                         )
-                        all_measurements["openaq"].extend(measurements)
+                        all_measurements["openaq"].extend(city_measurements)
+                        logger.info(f"{city_name}: {len(city_measurements)} measurements")
+                        
+                        # Pausa entre ciudades
+                        await asyncio.sleep(2)
+                        
                     except Exception as e:
-                        logger.warning(f"OpenAQ extraction failed for {coord}: {e}")
+                        logger.warning(f"OpenAQ extraction failed for {city_name}: {e}")
+                
+                # Eliminar duplicados basados en coordenadas y timestamp
+                unique_measurements = []
+                seen = set()
+                for m in all_measurements["openaq"]:
+                    key = (m.coordinates.latitude, m.coordinates.longitude, m.parameter, m.last_updated.isoformat())
+                    if key not in seen:
+                        seen.add(key)
+                        unique_measurements.append(m)
+                
+                all_measurements["openaq"] = unique_measurements
+                logger.info(f"After deduplication: {len(unique_measurements)} unique OpenAQ measurements")
             
-            # Si no se obtuvieron datos reales, generar datos simulados
+            # Solo usar datos simulados como ÚLTIMO RECURSO
             total_real_data = sum(len(measurements) for key, measurements in all_measurements.items() if key != "mock")
             
-            if total_real_data < 10:  # Muy pocos datos reales
-                logger.info("Limited real data available, generating mock data...")
+            logger.info(f"Real data summary - AirNow: {len(all_measurements['airnow'])}, OpenAQ: {len(all_measurements['openaq'])}, Total: {total_real_data}")
+            
+            if total_real_data == 0:  # Solo si NO hay datos reales en absoluto
+                logger.warning("⚠️  NO REAL DATA AVAILABLE - Using mock data as fallback")
+                logger.warning("⚠️  Check your API keys and network connection")
                 from src.mock_data_generator import MockDataGenerator
                 
                 generator = MockDataGenerator()
-                mock_measurements = generator.generate_measurements(100)
+                mock_measurements = generator.generate_measurements(50)  # Reducido a 50
                 all_measurements["mock"] = mock_measurements
                 
-                logger.info(f"Generated {len(mock_measurements)} mock measurements")
+                logger.warning(f"Generated {len(mock_measurements)} mock measurements as fallback")
+            else:
+                logger.info(f"✅ SUCCESS: Using {total_real_data} real measurements from APIs")
+                # No generar datos simulados si tenemos datos reales
             
             # Actualizar estado
             total_extracted = sum(len(measurements) for measurements in all_measurements.values())
