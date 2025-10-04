@@ -303,54 +303,146 @@ async def get_measurements_by_location_name(
 async def get_all_locations_in_area(
     bbox: str = Query(
         ...,
-        description="Área de búsqueda en formato bbox (min_lon,min_lat,max_lon,max_lat). Ejemplos: '-109.05,37,-102.04,41' (Colorado), '-74.3,40.4,-73.7,40.9' (NYC)"
+        description="Área de búsqueda en formato bbox (min_lon,min_lat,max_lon,max_lat)"
     ),
     limit: int = Query(
-        100,
-        description="Número máximo de ubicaciones a retornar",
+        1000,
+        description="Número máximo de ubicaciones a obtener de la API",
         ge=1,
-        le=1000
+        le=10000
+    ),
+    max_process: int = Query(
+        100,
+        description="Número máximo de ubicaciones a procesar (limita tiempo de espera)",
+        ge=1,
+        le=200
+    ),
+    sampling: str = Query(
+        "distributed",
+        description="Estrategia de muestreo: 'random', 'distributed', 'first'",
+        regex="^(random|distributed|first)$"
     )
 ):
     """
-    Obtener TODAS las ubicaciones de monitoreo dentro de un área específica con sus mediciones
+    Obtener ubicaciones de monitoreo con sus mediciones - OPTIMIZADO
     
-    **API 3: Mapa de Ubicaciones con Datos**
+    **Control de tiempo de respuesta:**
     
-    Esta API te permite visualizar todos los puntos de monitoreo en un área geográfica
-    y obtener las mediciones de contaminación de cada uno.
+    - `max_process`: Límite de ubicaciones a procesar (default: 100)
+      - 20 ubicaciones: ~5-8 segundos
+      - 50 ubicaciones: ~10-15 segundos
+      - 100 ubicaciones: ~20-30 segundos
     
-    Ideal para:
-    - Mostrar todos los sensores en un mapa interactivo
-    - Comparar niveles de contaminación entre diferentes puntos de una ciudad
-    - Análisis de densidad de estaciones de monitoreo
+    - `sampling`: Estrategia de selección cuando hay muchas ubicaciones
+      - `distributed` (recomendado): Distribuye uniformemente en el área
+      - `random`: Selección aleatoria
+      - `first`: Toma las primeras N ubicaciones
     
-    Ejemplos de bbox útiles:
-    - Colorado: "-109.05,37,-102.04,41"
-    - New York City: "-74.3,40.4,-73.7,40.9"
-    - Los Angeles: "-118.67,33.70,-118.15,34.34"
-    - Chicago: "-87.94,41.64,-87.52,42.02"
-    - Miami: "-80.32,25.71,-80.13,25.86"
-    
-    Cada ubicación incluye:
-    - location_id: ID único de la ubicación
-    - name: Nombre del lugar
-    - locality: Área/región
-    - coordinates: Latitud y longitud
-    - measurements: Mediciones de PM10, PM2.5, NO2, CO, SO2, O3
-    - measurements_summary: Resumen de parámetros disponibles
-    
-    Returns:
-        JSON con todas las ubicaciones y sus mediciones de contaminación
+    Ejemplos para diferentes estados:
+    - Colorado: `?bbox=-109.05,37,-102.04,41&max_process=50`
+    - California: `?bbox=-124.48,32.53,-114.13,42.01&max_process=100`
+    - New York: `?bbox=-79.76,40.50,-71.86,45.01&max_process=50`
+    - Washington: `?bbox=-124.85,45.54,-116.92,49&max_process=100`
     """
     try:
         data = await client.get_all_locations_in_bbox_with_measurements(
             bbox=bbox,
-            limit=limit
+            limit=limit,
+            max_locations_to_process=max_process,
+            sampling_strategy=sampling
         )
         return data
     except Exception as e:
         raise HTTPException(
             status_code=500,
             detail=f"Error fetching locations: {str(e)}"
+        )
+
+
+@router.get("/test/washington")
+async def test_washington_state(
+    max_process: int = Query(
+        100,
+        description="Número de ubicaciones a procesar (default: 100)",
+        ge=10,
+        le=200
+    ),
+    sampling: str = Query(
+        "distributed",
+        description="Estrategia: 'distributed', 'random', 'first'",
+        regex="^(random|distributed|first)$"
+    )
+):
+    """
+    🧪 ENDPOINT DE TEST: Washington State
+    
+    Prueba la API optimizada con el estado de Washington.
+    
+    **NOTA:** Tests grandes (100+ ubicaciones) pueden tardar 30-60 segundos.
+    
+    Configuraciones de prueba:
+    - Rápida (20 loc): `/test/washington?max_process=20` (~5-10s)
+    - Media (50 loc): `/test/washington?max_process=50` (~15-20s)
+    - Completa (100 loc): `/test/washington?max_process=100` (~30-40s)
+    
+    Compara diferentes estrategias:
+    - Distribuido: `?max_process=50&sampling=distributed`
+    - Aleatorio: `?max_process=50&sampling=random`
+    - Primeros: `?max_process=50&sampling=first`
+    """
+    import time
+    
+    # Bbox de Washington State
+    washington_bbox = "-124.85,45.54,-116.92,49"
+    
+    start_time = time.time()
+    
+    try:
+        data = await client.get_all_locations_in_bbox_with_measurements(
+            bbox=washington_bbox,
+            limit=1000,
+            max_locations_to_process=max_process,
+            sampling_strategy=sampling
+        )
+        
+        elapsed_time = time.time() - start_time
+        
+        # Agregar métricas de performance
+        successful = data.get('successful_locations', data.get('locations_processed', 0))
+        failed = data.get('failed_locations', 0)
+        
+        data["performance"] = {
+            "total_time_seconds": round(elapsed_time, 2),
+            "locations_per_second": round(successful / elapsed_time, 2) if elapsed_time > 0 and successful > 0 else 0,
+            "average_time_per_location_ms": round((elapsed_time / successful) * 1000, 2) if successful > 0 else 0,
+            "successful_locations": successful,
+            "failed_locations": failed
+        }
+        
+        # Agregar estadísticas de cobertura
+        if data.get("found"):
+            locations = data.get("locations", [])
+            
+            # Calcular estadísticas de parámetros (solo de ubicaciones exitosas)
+            param_stats = {param: 0 for param in client.PARAMETERS.keys()}
+            for loc in locations:
+                if "error" not in loc:  # Solo contar ubicaciones sin error
+                    for param, measurement in loc.get("measurements", {}).items():
+                        if measurement.get("available"):
+                            param_stats[param] += 1
+            
+            data["parameter_coverage"] = {
+                param: {
+                    "available_at": count,
+                    "percentage": f"{(count / successful * 100):.1f}%" if successful > 0 else "0%"
+                }
+                for param, count in param_stats.items()
+            }
+        
+        return data
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error testing Washington: {str(e)}"
         )
