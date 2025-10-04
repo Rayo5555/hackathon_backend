@@ -1,0 +1,1447 @@
+{
+  "extraction_time": "2025-10-04T15:16:58.070170",
+  "source": "mock",
+  "count": 80,
+  "measurements": [
+    {
+      "parameter": "so2",
+      "value": 30.38,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 10:50:10.364217",
+      "aqi": 43,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 30.36544425990659,
+        "longitude": -81.7094501617692
+      },
+      "location_name": "Jacksonville Monitor 2",
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_5672"
+    },
+    {
+      "parameter": "so2",
+      "value": 71.62,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 02:06:32.174016",
+      "aqi": 95,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.958947823414235,
+        "longitude": -82.95600595451913
+      },
+      "location_name": "Columbus Monitor 2",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_5650"
+    },
+    {
+      "parameter": "pm10",
+      "value": 83.96,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 10:07:26.579442",
+      "aqi": 64,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 40.02299044165338,
+        "longitude": -75.19095616160091
+      },
+      "location_name": "Philadelphia Monitor 1",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_5551"
+    },
+    {
+      "parameter": "o3",
+      "value": 141.39,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 17:17:34.400093",
+      "aqi": 238,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 39.945038504573716,
+        "longitude": -75.17105236944226
+      },
+      "location_name": "Philadelphia Monitor 2",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_6352"
+    },
+    {
+      "parameter": "o3",
+      "value": 164.9,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 23:53:12.108633",
+      "aqi": 263,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 39.91210656127419,
+        "longitude": -75.08096312512717
+      },
+      "location_name": "Philadelphia Monitor 2",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_3273"
+    },
+    {
+      "parameter": "no2",
+      "value": 95.24,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 07:39:04.407056",
+      "aqi": 94,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.86169473721342,
+        "longitude": -86.08558275853966
+      },
+      "location_name": "Indianapolis Monitor 1",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_8563"
+    },
+    {
+      "parameter": "pm25",
+      "value": 34.96,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 20:03:38.720903",
+      "aqi": 98,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.81333228373727,
+        "longitude": -86.12964284261471
+      },
+      "location_name": "Indianapolis Monitor 2",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7794"
+    },
+    {
+      "parameter": "no2",
+      "value": 85.52,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 01:26:29.251113",
+      "aqi": 84,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 30.348233767506308,
+        "longitude": -81.69708515505185
+      },
+      "location_name": "Jacksonville Monitor 2",
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4903"
+    },
+    {
+      "parameter": "no2",
+      "value": 11.22,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 15:15:49.781487",
+      "aqi": 10,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 37.841454217330885,
+        "longitude": -122.50324344416462
+      },
+      "location_name": "San Francisco Monitor 2",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3518"
+    },
+    {
+      "parameter": "pm10",
+      "value": 46.93,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 20:41:39.150315",
+      "aqi": 43,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.81333006160741,
+        "longitude": -117.14993432256813
+      },
+      "location_name": "San Diego Monitor 3",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_6328"
+    },
+    {
+      "parameter": "pm25",
+      "value": 4.35,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 01:31:38.204851",
+      "aqi": 18,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 41.810589023091985,
+        "longitude": -87.55849949520285
+      },
+      "location_name": "Chicago Monitor 4",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_2353"
+    },
+    {
+      "parameter": "co",
+      "value": 12.37,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 15:12:08.251213",
+      "aqi": 149,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 47.57386672797309,
+        "longitude": -122.34975869303379
+      },
+      "location_name": "Seattle Monitor 3",
+      "city": "Seattle",
+      "state": "WA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_2005"
+    },
+    {
+      "parameter": "o3",
+      "value": 135.36,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 07:39:00.149348",
+      "aqi": 231,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 47.70446869667085,
+        "longitude": -122.26599431046046
+      },
+      "location_name": "Seattle Monitor 1",
+      "city": "Seattle",
+      "state": "WA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8086"
+    },
+    {
+      "parameter": "pm25",
+      "value": 14.36,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 19:34:25.166138",
+      "aqi": 55,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.850732873279206,
+        "longitude": -97.41447965752016
+      },
+      "location_name": "Fort Worth Monitor 4",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_7638"
+    },
+    {
+      "parameter": "o3",
+      "value": 40.22,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 03:17:09.535261",
+      "aqi": 37,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 41.80838173598639,
+        "longitude": -87.53951038691493
+      },
+      "location_name": "Chicago Monitor 1",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_1790"
+    },
+    {
+      "parameter": "co",
+      "value": 7.5,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 09:41:34.724408",
+      "aqi": 80,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 40.63561494647391,
+        "longitude": -73.99203362349078
+      },
+      "location_name": "New York Monitor 5",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_8399"
+    },
+    {
+      "parameter": "co",
+      "value": 12.48,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 11:23:57.269545",
+      "aqi": 151,
+      "category": "Unhealthy",
+      "coordinates": {
+        "latitude": 39.71613170051846,
+        "longitude": -104.97584193743059
+      },
+      "location_name": "Denver Monitor 1",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_2707"
+    },
+    {
+      "parameter": "pm25",
+      "value": 29.09,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 03:07:14.960613",
+      "aqi": 86,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.80673146695604,
+        "longitude": -117.19463354230959
+      },
+      "location_name": "San Diego Monitor 5",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_9356"
+    },
+    {
+      "parameter": "so2",
+      "value": 64.73,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 19:45:14.982657",
+      "aqi": 87,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 29.70990282681515,
+        "longitude": -95.41031733995304
+      },
+      "location_name": "Houston Monitor 2",
+      "city": "Houston",
+      "state": "TX",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_7989"
+    },
+    {
+      "parameter": "co",
+      "value": 3.85,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 03:55:18.232467",
+      "aqi": 43,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 39.8294694418419,
+        "longitude": -104.9870707042023
+      },
+      "location_name": "Denver Monitor 5",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_8052"
+    },
+    {
+      "parameter": "no2",
+      "value": 57.72,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 01:05:49.829596",
+      "aqi": 55,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.95277534202529,
+        "longitude": -75.13812989381982
+      },
+      "location_name": "Philadelphia Monitor 3",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_1720"
+    },
+    {
+      "parameter": "co",
+      "value": 6.29,
+      "unit": "ppm",
+      "last_updated": "2025-10-03 21:53:17.461002",
+      "aqi": 68,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.68583807187675,
+        "longitude": -105.08260588197825
+      },
+      "location_name": "Denver Monitor 2",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7285"
+    },
+    {
+      "parameter": "so2",
+      "value": 17.74,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 22:34:41.147246",
+      "aqi": 25,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 37.84902987226156,
+        "longitude": -122.49805668832857
+      },
+      "location_name": "San Francisco Monitor 3",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_7268"
+    },
+    {
+      "parameter": "no2",
+      "value": 38.28,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 07:41:52.745613",
+      "aqi": 36,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.80686756286586,
+        "longitude": -97.2836996166818
+      },
+      "location_name": "Fort Worth Monitor 4",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4385"
+    },
+    {
+      "parameter": "no2",
+      "value": 50.67,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 00:15:29.379559",
+      "aqi": 47,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 30.226670631983723,
+        "longitude": -97.79260558837461
+      },
+      "location_name": "Austin Monitor 5",
+      "city": "Austin",
+      "state": "TX",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_5883"
+    },
+    {
+      "parameter": "o3",
+      "value": 122.44,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 06:18:55.873818",
+      "aqi": 218,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 32.635999242902216,
+        "longitude": -117.16629945293234
+      },
+      "location_name": "San Diego Monitor 1",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_6397"
+    },
+    {
+      "parameter": "co",
+      "value": 0.88,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 06:47:01.869904",
+      "aqi": 9,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 34.11460009095477,
+        "longitude": -118.33045777174662
+      },
+      "location_name": "Los Angeles Monitor 1",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_5497"
+    },
+    {
+      "parameter": "co",
+      "value": 7.56,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 10:40:43.283002",
+      "aqi": 81,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.25017120525488,
+        "longitude": -121.82064999495594
+      },
+      "location_name": "San Jose Monitor 4",
+      "city": "San Jose",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9492"
+    },
+    {
+      "parameter": "pm10",
+      "value": 112.87,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 04:51:49.758748",
+      "aqi": 79,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 33.99780786157029,
+        "longitude": -118.28027899095987
+      },
+      "location_name": "Los Angeles Monitor 3",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4100"
+    },
+    {
+      "parameter": "o3",
+      "value": 139.87,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 15:58:09.584934",
+      "aqi": 236,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 41.91487687247804,
+        "longitude": -87.54364207066178
+      },
+      "location_name": "Chicago Monitor 2",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_5264"
+    },
+    {
+      "parameter": "co",
+      "value": 1.29,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 09:27:25.623094",
+      "aqi": 14,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 30.23559845847349,
+        "longitude": -97.79187161234493
+      },
+      "location_name": "Austin Monitor 3",
+      "city": "Austin",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7191"
+    },
+    {
+      "parameter": "no2",
+      "value": 94.39,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 16:14:18.338264",
+      "aqi": 94,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 40.61607978385295,
+        "longitude": -73.96711269155287
+      },
+      "location_name": "New York Monitor 2",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_9385"
+    },
+    {
+      "parameter": "no2",
+      "value": 63.84,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 14:56:51.331495",
+      "aqi": 61,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.69373667430174,
+        "longitude": -122.43989302435068
+      },
+      "location_name": "San Francisco Monitor 1",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_5668"
+    },
+    {
+      "parameter": "no2",
+      "value": 87.52,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 16:03:56.202738",
+      "aqi": 86,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 41.87952798975986,
+        "longitude": -87.71436115951657
+      },
+      "location_name": "Chicago Monitor 1",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_7713"
+    },
+    {
+      "parameter": "co",
+      "value": 2.47,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 03:22:58.571966",
+      "aqi": 28,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 33.45642767866054,
+        "longitude": -112.04248926198476
+      },
+      "location_name": "Phoenix Monitor 5",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4873"
+    },
+    {
+      "parameter": "so2",
+      "value": 74.95,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 11:03:41.303761",
+      "aqi": 99,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.69428326254296,
+        "longitude": -86.06387774284318
+      },
+      "location_name": "Indianapolis Monitor 1",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_2195"
+    },
+    {
+      "parameter": "o3",
+      "value": 35.25,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 19:07:13.221189",
+      "aqi": 32,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 33.97851569925339,
+        "longitude": -118.15139447929707
+      },
+      "location_name": "Los Angeles Monitor 4",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_2384"
+    },
+    {
+      "parameter": "pm10",
+      "value": 112.45,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 16:48:55.876028",
+      "aqi": 79,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.72416900253027,
+        "longitude": -122.43712795419839
+      },
+      "location_name": "San Francisco Monitor 1",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7384"
+    },
+    {
+      "parameter": "no2",
+      "value": 48.64,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 10:53:29.637379",
+      "aqi": 45,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.808207385817866,
+        "longitude": -97.2336531820648
+      },
+      "location_name": "Fort Worth Monitor 4",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9072"
+    },
+    {
+      "parameter": "o3",
+      "value": 164.4,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 16:14:32.954526",
+      "aqi": 262,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 32.71337809360882,
+        "longitude": -117.23442672126936
+      },
+      "location_name": "San Diego Monitor 1",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6022"
+    },
+    {
+      "parameter": "pm10",
+      "value": 53.23,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 22:19:53.016668",
+      "aqi": 49,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 39.68632642759714,
+        "longitude": -104.92984116013056
+      },
+      "location_name": "Denver Monitor 3",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4121"
+    },
+    {
+      "parameter": "co",
+      "value": 8.53,
+      "unit": "ppm",
+      "last_updated": "2025-10-03 17:38:45.925036",
+      "aqi": 91,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 40.61940051299271,
+        "longitude": -74.0938901796226
+      },
+      "location_name": "New York Monitor 5",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6252"
+    },
+    {
+      "parameter": "pm10",
+      "value": 142.7,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 05:12:41.611889",
+      "aqi": 94,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 47.53217156847001,
+        "longitude": -122.32215520523543
+      },
+      "location_name": "Seattle Monitor 4",
+      "city": "Seattle",
+      "state": "WA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_4574"
+    },
+    {
+      "parameter": "o3",
+      "value": 97.58,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 01:25:10.536086",
+      "aqi": 181,
+      "category": "Unhealthy",
+      "coordinates": {
+        "latitude": 34.136504075434296,
+        "longitude": -118.20818389058238
+      },
+      "location_name": "Los Angeles Monitor 5",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_2453"
+    },
+    {
+      "parameter": "pm10",
+      "value": 123.56,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 17:18:20.312357",
+      "aqi": 84,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 40.72339553798286,
+        "longitude": -73.91242266948126
+      },
+      "location_name": "New York Monitor 4",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_7156"
+    },
+    {
+      "parameter": "so2",
+      "value": 28.61,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 21:10:11.811484",
+      "aqi": 40,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 47.58443738938281,
+        "longitude": -122.31750698383681
+      },
+      "location_name": "Seattle Monitor 1",
+      "city": "Seattle",
+      "state": "WA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_5232"
+    },
+    {
+      "parameter": "no2",
+      "value": 65.56,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 16:51:48.148031",
+      "aqi": 63,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 29.406928112986485,
+        "longitude": -98.45423525022298
+      },
+      "location_name": "San Antonio Monitor 5",
+      "city": "San Antonio",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1457"
+    },
+    {
+      "parameter": "pm25",
+      "value": 38.79,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 10:55:08.850540",
+      "aqi": 108,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 34.07366032769218,
+        "longitude": -118.26619405075469
+      },
+      "location_name": "Los Angeles Monitor 2",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1087"
+    },
+    {
+      "parameter": "so2",
+      "value": 65.28,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 11:49:10.097003",
+      "aqi": 87,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 30.352330637198573,
+        "longitude": -97.65582703996562
+      },
+      "location_name": "Austin Monitor 3",
+      "city": "Austin",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4670"
+    },
+    {
+      "parameter": "pm10",
+      "value": 8.52,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 08:03:59.243765",
+      "aqi": 7,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 39.676420676429125,
+        "longitude": -86.12230184698448
+      },
+      "location_name": "Indianapolis Monitor 5",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_4114"
+    },
+    {
+      "parameter": "so2",
+      "value": 33.36,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 04:56:37.862246",
+      "aqi": 47,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 33.406228638981986,
+        "longitude": -112.0935542080237
+      },
+      "location_name": "Phoenix Monitor 1",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3417"
+    },
+    {
+      "parameter": "pm10",
+      "value": 74.09,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 00:01:58.217694",
+      "aqi": 60,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.811062596760785,
+        "longitude": -86.19197937889473
+      },
+      "location_name": "Indianapolis Monitor 1",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7972"
+    },
+    {
+      "parameter": "co",
+      "value": 1.67,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 09:01:25.088802",
+      "aqi": 19,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 41.812180952241484,
+        "longitude": -87.6034040061746
+      },
+      "location_name": "Chicago Monitor 3",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5847"
+    },
+    {
+      "parameter": "so2",
+      "value": 16.45,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 03:53:47.349779",
+      "aqi": 23,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 41.97391777514731,
+        "longitude": -87.65568134395949
+      },
+      "location_name": "Chicago Monitor 2",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_3031"
+    },
+    {
+      "parameter": "so2",
+      "value": 73.6,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 00:21:48.897410",
+      "aqi": 98,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 30.30860880303457,
+        "longitude": -81.57630676783648
+      },
+      "location_name": "Jacksonville Monitor 1",
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_4367"
+    },
+    {
+      "parameter": "pm25",
+      "value": 20.26,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 21:48:19.417991",
+      "aqi": 67,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.83070225854143,
+        "longitude": -86.10041991491556
+      },
+      "location_name": "Indianapolis Monitor 4",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3299"
+    },
+    {
+      "parameter": "pm10",
+      "value": 8.14,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 14:23:40.869510",
+      "aqi": 7,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 40.659109612673454,
+        "longitude": -73.99859121561293
+      },
+      "location_name": "New York Monitor 5",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1300"
+    },
+    {
+      "parameter": "so2",
+      "value": 65.83,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 19:53:53.966305",
+      "aqi": 88,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 29.36110123999886,
+        "longitude": -98.52774120145898
+      },
+      "location_name": "San Antonio Monitor 2",
+      "city": "San Antonio",
+      "state": "TX",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_6654"
+    },
+    {
+      "parameter": "co",
+      "value": 8.13,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 00:43:18.033632",
+      "aqi": 87,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 34.060726264245,
+        "longitude": -118.17201534395444
+      },
+      "location_name": "Los Angeles Monitor 3",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9305"
+    },
+    {
+      "parameter": "so2",
+      "value": 24.49,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 04:45:09.993870",
+      "aqi": 34,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 39.96306216404232,
+        "longitude": -82.99205964728165
+      },
+      "location_name": "Columbus Monitor 2",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5190"
+    },
+    {
+      "parameter": "no2",
+      "value": 59.01,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 04:25:15.846465",
+      "aqi": 56,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.90513167212223,
+        "longitude": -83.05502475421108
+      },
+      "location_name": "Columbus Monitor 5",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1336"
+    },
+    {
+      "parameter": "o3",
+      "value": 80.41,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 16:57:44.020413",
+      "aqi": 134,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 37.785803301387084,
+        "longitude": -122.3272004601063
+      },
+      "location_name": "San Francisco Monitor 5",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4466"
+    },
+    {
+      "parameter": "no2",
+      "value": 61.12,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 10:17:38.184625",
+      "aqi": 58,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 29.675248561031353,
+        "longitude": -95.45993744720064
+      },
+      "location_name": "Houston Monitor 1",
+      "city": "Houston",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8731"
+    },
+    {
+      "parameter": "o3",
+      "value": 65.05,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 01:51:34.354265",
+      "aqi": 84,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 30.409789765519715,
+        "longitude": -81.69066734880224
+      },
+      "location_name": "Jacksonville Monitor 2",
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9150"
+    },
+    {
+      "parameter": "pm10",
+      "value": 36.06,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 20:16:23.914296",
+      "aqi": 33,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 29.390037686589054,
+        "longitude": -98.57726749805839
+      },
+      "location_name": "San Antonio Monitor 4",
+      "city": "San Antonio",
+      "state": "TX",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_8117"
+    },
+    {
+      "parameter": "o3",
+      "value": 137.09,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 22:59:34.995169",
+      "aqi": 233,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 39.99204202313659,
+        "longitude": -75.08185328390482
+      },
+      "location_name": "Philadelphia Monitor 4",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1391"
+    },
+    {
+      "parameter": "pm10",
+      "value": 136.9,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 04:44:14.009004",
+      "aqi": 91,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 33.95339074140832,
+        "longitude": -118.22646293528854
+      },
+      "location_name": "Los Angeles Monitor 3",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_3869"
+    },
+    {
+      "parameter": "so2",
+      "value": 42.69,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 01:04:22.911652",
+      "aqi": 59,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 33.47448343279518,
+        "longitude": -112.12638538803425
+      },
+      "location_name": "Phoenix Monitor 5",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7350"
+    },
+    {
+      "parameter": "pm25",
+      "value": 7.02,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 22:41:10.012675",
+      "aqi": 29,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.79827376396501,
+        "longitude": -97.35889287312064
+      },
+      "location_name": "Fort Worth Monitor 4",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9240"
+    },
+    {
+      "parameter": "so2",
+      "value": 29.93,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 19:20:34.469983",
+      "aqi": 42,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 41.930325978109316,
+        "longitude": -87.56732797569931
+      },
+      "location_name": "Chicago Monitor 3",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8608"
+    },
+    {
+      "parameter": "pm25",
+      "value": 47.37,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 13:33:19.397724",
+      "aqi": 129,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 32.68394286430782,
+        "longitude": -97.27562065607056
+      },
+      "location_name": "Fort Worth Monitor 5",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8768"
+    },
+    {
+      "parameter": "co",
+      "value": 11.0,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 07:30:45.214974",
+      "aqi": 126,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 29.42565010458402,
+        "longitude": -98.54295110060474
+      },
+      "location_name": "San Antonio Monitor 1",
+      "city": "San Antonio",
+      "state": "TX",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_8552"
+    },
+    {
+      "parameter": "pm25",
+      "value": 33.34,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 00:24:52.763805",
+      "aqi": 95,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 33.37375654965967,
+        "longitude": -111.97923494475795
+      },
+      "location_name": "Phoenix Monitor 2",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_8180"
+    },
+    {
+      "parameter": "pm10",
+      "value": 102.52,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 18:21:10.908263",
+      "aqi": 74,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.97601062539659,
+        "longitude": -75.24618269025378
+      },
+      "location_name": "Philadelphia Monitor 2",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_4460"
+    },
+    {
+      "parameter": "co",
+      "value": 10.17,
+      "unit": "ppm",
+      "last_updated": "2025-10-03 15:26:25.885471",
+      "aqi": 112,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 32.61682708740349,
+        "longitude": -117.0850990057517
+      },
+      "location_name": "San Diego Monitor 1",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_9894"
+    },
+    {
+      "parameter": "co",
+      "value": 5.0,
+      "unit": "ppm",
+      "last_updated": "2025-10-03 19:16:25.948803",
+      "aqi": 56,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.712606938256904,
+        "longitude": -122.47398808192109
+      },
+      "location_name": "San Francisco Monitor 4",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_9028"
+    },
+    {
+      "parameter": "o3",
+      "value": 56.05,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 07:46:18.746815",
+      "aqi": 56,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 29.33425243370434,
+        "longitude": -98.52011109098667
+      },
+      "location_name": "San Antonio Monitor 3",
+      "city": "San Antonio",
+      "state": "TX",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_7343"
+    },
+    {
+      "parameter": "pm10",
+      "value": 38.11,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 12:38:48.696489",
+      "aqi": 35,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 34.13605256182177,
+        "longitude": -118.20963426532563
+      },
+      "location_name": "Los Angeles Monitor 1",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_5357"
+    },
+    {
+      "parameter": "o3",
+      "value": 116.27,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 05:12:42.867947",
+      "aqi": 211,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 40.6451309057426,
+        "longitude": -74.00790482993776
+      },
+      "location_name": "New York Monitor 4",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_4676"
+    },
+    {
+      "parameter": "pm25",
+      "value": 32.85,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 16:05:50.860103",
+      "aqi": 94,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.76055524710678,
+        "longitude": -104.89917494870056
+      },
+      "location_name": "Denver Monitor 2",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "source": "airnow",
+      "site_id": "airnow_6089"
+    }
+  ]
+}

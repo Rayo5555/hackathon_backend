@@ -59,7 +59,8 @@ async def get_system_status():
 
 @router.get("/measurements/latest", response_model=APIResponse)
 async def get_latest_measurements(
-    pollutant: Optional[PollutantType] = Query(None, description="Filtrar por tipo de contaminante"),
+    pollutant: Optional[str] = Query(None, description="Filtrar por tipo de contaminante", 
+                                   enum=["o3", "no2", "pm25", "pm10", "so2", "co", "hcho"]),
     state: Optional[str] = Query(None, description="Filtrar por estado (código de 2 letras)"),
     limit: int = Query(100, ge=1, le=1000, description="Número máximo de mediciones a retornar")
 ):
@@ -67,28 +68,50 @@ async def get_latest_measurements(
     try:
         measurements = await _load_latest_measurements()
         
+        logger.info(f"Loaded {len(measurements)} total measurements")
+        logger.info(f"Filters: pollutant={pollutant}, state={state}, limit={limit}")
+        
         # Aplicar filtros
         filtered_measurements = measurements
         
         if pollutant:
-            filtered_measurements = [
-                m for m in filtered_measurements 
-                if m.parameter == pollutant
-            ]
+            # Convertir string a PollutantType para comparación
+            try:
+                pollutant_enum = PollutantType(pollutant.lower())
+                filtered_measurements = [
+                    m for m in filtered_measurements 
+                    if m.parameter == pollutant_enum
+                ]
+                logger.info(f"After pollutant filter ({pollutant}): {len(filtered_measurements)} measurements")
+            except ValueError:
+                logger.warning(f"Invalid pollutant type: {pollutant}")
+                # Return empty list for invalid pollutant
+                filtered_measurements = []
         
-        if state:
+        if state and filtered_measurements:
+            state_upper = state.upper()
             filtered_measurements = [
                 m for m in filtered_measurements 
-                if m.state and m.state.upper() == state.upper()
+                if m.state and m.state.upper() == state_upper
             ]
+            logger.info(f"After state filter ({state}): {len(filtered_measurements)} measurements")
         
         # Ordenar por timestamp más reciente y limitar
         filtered_measurements.sort(key=lambda x: x.last_updated, reverse=True)
         limited_measurements = filtered_measurements[:limit]
         
+        # Agregar información de debugging en el mensaje
+        filter_info = []
+        if pollutant:
+            filter_info.append(f"pollutant={pollutant}")
+        if state:
+            filter_info.append(f"state={state}")
+        
+        filter_text = f" (filters: {', '.join(filter_info)})" if filter_info else ""
+        
         return APIResponse(
             success=True,
-            message=f"Retrieved {len(limited_measurements)} measurements",
+            message=f"Retrieved {len(limited_measurements)} measurements{filter_text}",
             data=[m.model_dump() for m in limited_measurements],
             source=DataSource.OPENAQ  # Mixed sources
         )
@@ -103,11 +126,14 @@ async def get_measurements_by_location(
     latitude: float = Query(..., ge=-90, le=90, description="Latitud"),
     longitude: float = Query(..., ge=-180, le=180, description="Longitud"),
     radius_km: float = Query(50, ge=1, le=200, description="Radio de búsqueda en kilómetros"),
-    pollutant: Optional[PollutantType] = Query(None, description="Filtrar por tipo de contaminante")
+    pollutant: Optional[str] = Query(None, description="Filtrar por tipo de contaminante",
+                                   enum=["o3", "no2", "pm25", "pm10", "so2", "co", "hcho"])
 ):
     """Obtener mediciones cerca de una ubicación específica"""
     try:
         measurements = await _load_latest_measurements()
+        
+        logger.info(f"Searching near lat={latitude}, lon={longitude}, radius={radius_km}km")
         
         # Filtrar por ubicación (aproximación simple usando grados)
         # 1 grado ≈ 111 km
@@ -125,12 +151,20 @@ async def get_measurements_by_location(
                 if distance_km <= radius_km:
                     nearby_measurements.append(measurement)
         
+        logger.info(f"Found {len(nearby_measurements)} measurements in radius")
+        
         # Aplicar filtro de contaminante si se especifica
         if pollutant:
-            nearby_measurements = [
-                m for m in nearby_measurements 
-                if m.parameter == pollutant
-            ]
+            try:
+                pollutant_enum = PollutantType(pollutant.lower())
+                nearby_measurements = [
+                    m for m in nearby_measurements 
+                    if m.parameter == pollutant_enum
+                ]
+                logger.info(f"After pollutant filter ({pollutant}): {len(nearby_measurements)} measurements")
+            except ValueError:
+                logger.warning(f"Invalid pollutant type: {pollutant}")
+                nearby_measurements = []
         
         # Ordenar por distancia (aproximada)
         nearby_measurements.sort(key=lambda x: 
@@ -148,6 +182,154 @@ async def get_measurements_by_location(
     except Exception as e:
         logger.error(f"Error getting measurements by location: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/by-location", response_model=APIResponse)
+async def get_measurements_by_city_state(
+    city: Optional[str] = Query(None, description="Filtrar por ciudad"),
+    state: Optional[str] = Query(None, description="Filtrar por estado (código de 2 letras)"),
+    pollutant: Optional[str] = Query(None, description="Filtrar por tipo de contaminante",
+                                   enum=["o3", "no2", "pm25", "pm10", "so2", "co", "hcho"]),
+    limit: int = Query(100, ge=1, le=1000, description="Número máximo de mediciones a retornar")
+):
+    """Obtener mediciones filtradas por ciudad, estado y/o contaminante"""
+    try:
+        measurements = await _load_latest_measurements()
+        
+        logger.info(f"Filtering: city={city}, state={state}, pollutant={pollutant}")
+        logger.info(f"Total measurements loaded: {len(measurements)}")
+        
+        filtered_measurements = measurements
+        
+        # Filtrar por ciudad
+        if city:
+            city_lower = city.lower().strip()
+            filtered_measurements = [
+                m for m in filtered_measurements 
+                if m.city and city_lower in m.city.lower()
+            ]
+            logger.info(f"After city filter ({city}): {len(filtered_measurements)} measurements")
+        
+        # Filtrar por estado
+        if state:
+            state_upper = state.upper().strip()
+            filtered_measurements = [
+                m for m in filtered_measurements 
+                if m.state and m.state.upper() == state_upper
+            ]
+            logger.info(f"After state filter ({state}): {len(filtered_measurements)} measurements")
+        
+        # Filtrar por contaminante
+        if pollutant:
+            try:
+                pollutant_enum = PollutantType(pollutant.lower())
+                filtered_measurements = [
+                    m for m in filtered_measurements 
+                    if m.parameter == pollutant_enum
+                ]
+                logger.info(f"After pollutant filter ({pollutant}): {len(filtered_measurements)} measurements")
+            except ValueError:
+                logger.warning(f"Invalid pollutant type: {pollutant}")
+                filtered_measurements = []
+        
+        # Ordenar por timestamp más reciente y limitar
+        filtered_measurements.sort(key=lambda x: x.last_updated, reverse=True)
+        limited_measurements = filtered_measurements[:limit]
+        
+        # Crear mensaje informativo
+        filter_parts = []
+        if city:
+            filter_parts.append(f"city='{city}'")
+        if state:
+            filter_parts.append(f"state='{state}'")
+        if pollutant:
+            filter_parts.append(f"pollutant='{pollutant}'")
+        
+        filter_text = f" with filters: {', '.join(filter_parts)}" if filter_parts else ""
+        
+        return APIResponse(
+            success=True,
+            message=f"Retrieved {len(limited_measurements)} measurements{filter_text}",
+            data=[m.model_dump() for m in limited_measurements],
+            source=DataSource.OPENAQ
+        )
+        
+    except Exception as e:
+        logger.error(f"Error filtering measurements: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/filter-options", response_model=APIResponse)
+async def get_filter_options():
+    """Obtener opciones disponibles para filtros (estados, ciudades, contaminantes)"""
+    try:
+        measurements = await _load_latest_measurements()
+        
+        # Recopilar opciones únicas
+        states = sorted(set(m.state for m in measurements if m.state))
+        cities = sorted(set(m.city for m in measurements if m.city))
+        pollutants = sorted(set(m.parameter.value for m in measurements))
+        
+        options = {
+            "pollutants": [
+                {"value": p, "label": p.upper(), "description": get_pollutant_description(p)}
+                for p in pollutants
+            ],
+            "states": [
+                {"value": s, "label": s, "description": get_state_name(s)}
+                for s in states
+            ],
+            "cities": [
+                {"value": c, "label": c}
+                for c in cities[:50]  # Limitar a 50 ciudades principales
+            ],
+            "total_measurements": len(measurements)
+        }
+        
+        return APIResponse(
+            success=True,
+            message=f"Available filter options (from {len(measurements)} measurements)",
+            data=options,
+            source=DataSource.OPENAQ
+        )
+        
+    except Exception as e:
+        logger.error(f"Error getting filter options: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+def get_pollutant_description(pollutant: str) -> str:
+    """Obtener descripción del contaminante"""
+    descriptions = {
+        "o3": "Ozono",
+        "no2": "Dióxido de Nitrógeno",
+        "pm25": "Partículas PM2.5",
+        "pm10": "Partículas PM10",
+        "so2": "Dióxido de Azufre",
+        "co": "Monóxido de Carbono",
+        "hcho": "Formaldehído"
+    }
+    return descriptions.get(pollutant, pollutant.upper())
+
+
+def get_state_name(state_code: str) -> str:
+    """Obtener nombre completo del estado"""
+    states = {
+        "AL": "Alabama", "AK": "Alaska", "AZ": "Arizona", "AR": "Arkansas",
+        "CA": "California", "CO": "Colorado", "CT": "Connecticut", "DE": "Delaware",
+        "FL": "Florida", "GA": "Georgia", "HI": "Hawaii", "ID": "Idaho",
+        "IL": "Illinois", "IN": "Indiana", "IA": "Iowa", "KS": "Kansas",
+        "KY": "Kentucky", "LA": "Louisiana", "ME": "Maine", "MD": "Maryland",
+        "MA": "Massachusetts", "MI": "Michigan", "MN": "Minnesota", "MS": "Mississippi",
+        "MO": "Missouri", "MT": "Montana", "NE": "Nebraska", "NV": "Nevada",
+        "NH": "New Hampshire", "NJ": "New Jersey", "NM": "New Mexico", "NY": "New York",
+        "NC": "North Carolina", "ND": "North Dakota", "OH": "Ohio", "OK": "Oklahoma",
+        "OR": "Oregon", "PA": "Pennsylvania", "RI": "Rhode Island", "SC": "South Carolina",
+        "SD": "South Dakota", "TN": "Tennessee", "TX": "Texas", "UT": "Utah",
+        "VT": "Vermont", "VA": "Virginia", "WA": "Washington", "WV": "West Virginia",
+        "WI": "Wisconsin", "WY": "Wyoming", "DC": "Washington D.C."
+    }
+    return states.get(state_code, state_code)
 
 
 @router.get("/measurements/summary", response_model=APIResponse)
