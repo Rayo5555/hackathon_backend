@@ -20,12 +20,12 @@ class OpenAQClient:
     
     # Parameter IDs according to OpenAQ
     PARAMETERS = {
-        "pm10": 1,
-        "pm25": 2,
-        "no2": 7,
-        "co2": 8,
-        "so2": 9,
-        "o3": 10
+        "pm10": 1,    # Particulate Matter 10 micrometers (µg/m³)
+        "pm25": 2,    # Particulate Matter 2.5 micrometers (µg/m³)
+        "no2": 7,     # Nitrogen Dioxide (ppm)
+        "co": 8,      # Carbon Monoxide (ppm)
+        "so2": 9,     # Sulfur Dioxide (ppm)
+        "o3": 10      # Ozone (ppm)
     }
     
     def __init__(self, api_key: Optional[str] = None, timeout: float = 30.0):
@@ -61,7 +61,7 @@ class OpenAQClient:
         Get latest measurements for a specific parameter
         
         Args:
-            parameter_id: Parameter ID (1=pm10, 2=pm2.5, 7=NO2, 8=CO2, 9=SO2, 10=O3)
+            parameter_id: Parameter ID (1=pm10, 2=pm25, 7=NO2, 8=CO, 9=SO2, 10=O3)
             country: Country code (default: US)
             limit: Maximum number of results to return (after filtering)
             state: Optional state filter (applied client-side)
@@ -210,27 +210,112 @@ class OpenAQClient:
         
         return results
 
+    # Common bounding boxes for US regions (all 50 states + DC)
+    US_BBOXES = {
+        # Contiguous United States
+        "alabama": "-88.47,30.22,-84.89,35.01",
+        "arizona": "-114.82,31.33,-109.05,37.00",
+        "arkansas": "-94.62,33.00,-89.64,36.50",
+        "california": "-124.48,32.53,-114.13,42.01",
+        "colorado": "-109.05,37.00,-102.04,41.00",
+        "connecticut": "-73.73,40.98,-71.79,42.05",
+        "delaware": "-75.79,38.45,-75.05,39.84",
+        "florida": "-87.63,24.52,-80.03,31.00",
+        "georgia": "-85.61,30.36,-80.84,35.00",
+        "idaho": "-117.24,41.99,-111.04,49.00",
+        "illinois": "-91.51,36.97,-87.02,42.51",
+        "indiana": "-88.10,37.77,-84.78,41.76",
+        "iowa": "-96.64,40.38,-90.14,43.50",
+        "kansas": "-102.05,36.99,-94.59,40.00",
+        "kentucky": "-89.57,36.50,-81.96,39.15",
+        "louisiana": "-94.04,28.93,-88.82,33.02",
+        "maine": "-71.08,43.06,-66.95,47.46",
+        "maryland": "-79.49,37.97,-75.05,39.72",
+        "massachusetts": "-73.51,41.24,-69.93,42.89",
+        "michigan": "-90.42,41.70,-82.12,48.31",
+        "minnesota": "-97.24,43.50,-89.49,49.38",
+        "mississippi": "-91.66,30.17,-88.10,35.00",
+        "missouri": "-95.77,35.99,-89.10,40.61",
+        "montana": "-116.05,44.36,-104.04,49.00",
+        "nebraska": "-104.05,40.00,-95.31,43.00",
+        "nevada": "-120.01,35.00,-114.04,42.00",
+        "new_hampshire": "-72.56,42.70,-70.61,45.31",
+        "new_jersey": "-75.56,38.93,-73.89,41.36",
+        "new_mexico": "-109.05,31.33,-103.00,37.00",
+        "new_york": "-79.76,40.50,-71.86,45.01",
+        "north_carolina": "-84.32,33.84,-75.46,36.59",
+        "north_dakota": "-104.05,45.94,-96.55,49.00",
+        "ohio": "-84.82,38.40,-80.52,42.32",
+        "oklahoma": "-103.00,33.62,-94.43,37.00",
+        "oregon": "-124.57,41.99,-116.46,46.29",
+        "pennsylvania": "-80.52,39.72,-74.69,42.27",
+        "rhode_island": "-71.91,41.15,-71.12,42.02",
+        "south_carolina": "-83.35,32.03,-78.54,35.22",
+        "south_dakota": "-104.06,42.48,-96.44,45.94",
+        "tennessee": "-90.31,34.98,-81.65,36.68",
+        "texas": "-106.65,25.84,-93.51,36.50",
+        "utah": "-114.05,37.00,-109.04,42.00",
+        "vermont": "-73.44,42.73,-71.46,45.02",
+        "virginia": "-83.68,36.54,-75.24,39.47",
+        "washington": "-124.85,45.54,-116.92,49.00",
+        "west_virginia": "-82.64,37.20,-77.72,40.64",
+        "wisconsin": "-92.89,42.49,-86.25,47.31",
+        "wyoming": "-111.06,40.99,-104.05,45.01",
+        # Non-contiguous states
+        "alaska": "-179.15,51.21,179.78,71.44",
+        "hawaii": "-160.25,18.91,-154.81,22.23",
+        # District of Columbia
+        "dc": "-77.12,38.79,-76.91,38.99",
+        "district_of_columbia": "-77.12,38.79,-76.91,38.99",
+        # Entire US
+        "entire_us": "-125.0,24.0,-66.0,49.0",  # Continental USA
+        "all_states": "-179.15,18.91,179.78,71.44"  # All 50 states including AK and HI
+    }
+    
     async def search_location_and_get_all_measurements(
         self,
         location_name: str,
-        bbox: str = "-109.05,37,-102.04,41"
+        bbox: Optional[str] = None,
+        state: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Search for a location by name and get all pollution measurements
         
         Args:
             location_name: Name of the location to search for (case insensitive, partial match)
-            bbox: Bounding box to search within (default: Colorado area)
+            bbox: Optional bounding box (if not provided, will search entire US or use state bbox)
+            state: Optional state name (e.g., "colorado", "new_york") - uses predefined bbox for that state
             
         Returns:
             Dictionary with location info and all parameter measurements
         """
+        # Determine which bbox to use
+        search_bbox = bbox
+        
+        if not search_bbox and state:
+            # Use predefined state bbox
+            state_key = state.lower().replace(" ", "_")
+            search_bbox = self.US_BBOXES.get(state_key)
+            if not search_bbox:
+                return {
+                    "found": False,
+                    "message": f"State '{state}' not found in predefined regions. Available: {', '.join(self.US_BBOXES.keys())}",
+                    "search_criteria": {
+                        "location_name": location_name,
+                        "state": state
+                    }
+                }
+        
+        if not search_bbox:
+            # Default to entire US
+            search_bbox = self.US_BBOXES["entire_us"]
+        
         # Get locations using bbox parameter (OpenAQ v3 supports this!)
         async with httpx.AsyncClient(timeout=self.timeout) as client:
             # Get locations within the bounding box
             locations_response = await client.get(
                 f"{self.BASE_URL}/locations",
-                params={"limit": 1000, "bbox": bbox},
+                params={"limit": 1000, "bbox": search_bbox},
                 headers=self._get_headers()
             )
             locations_response.raise_for_status()
@@ -257,7 +342,8 @@ class OpenAQClient:
                 "message": f"No location found matching '{location_name}' in the specified area",
                 "search_criteria": {
                     "location_name": location_name,
-                    "bbox": bbox
+                    "bbox": search_bbox,
+                    "state": state if state else "entire_us"
                 },
                 "total_locations_searched": len(all_locations)
             }
@@ -406,7 +492,7 @@ class OpenAQClient:
         Get all measurements for a specific pollution parameter
         
         Args:
-            parameter_id: Parameter ID (1=pm10, 2=pm2.5, 7=NO2, 8=CO2, 9=SO2, 10=O3)
+            parameter_id: Parameter ID (1=pm10, 2=pm25, 7=NO2, 8=CO, 9=SO2, 10=O3)
             bbox: Bounding box for geographic filter (default: Colorado area)
             limit: Maximum number of results
             
