@@ -86,8 +86,8 @@ class TEMPOMonitor:
             'HCHO': 'V03',
         }
     
-    def search_data(self, product='NO2', date='2024-09-01', 
-                    lat=38.0, lon=-96.0, bbox_size=5.0):
+    def search_data(self, product='NO2', date='2025-09-01',
+        lat=38.0, lon=-96.0, daytime_only=True):
         """
         Search for TEMPO data
         
@@ -96,7 +96,7 @@ class TEMPOMonitor:
             date: Date string 'YYYY-MM-DD'
             lat: Latitude of point of interest
             lon: Longitude of point of interest
-            bbox_size: Size of bounding box (degrees)
+            daytime_only: Filter for daytime observations only
         
         Returns:
             List of data granules
@@ -107,7 +107,6 @@ class TEMPOMonitor:
         short_name = self.products[product]
         version = self.versions[product]
         
-        # Set temporal range for the day
         date_start = f"{date} 00:00:00"
         date_end = f"{date} 23:59:59"
         
@@ -116,7 +115,6 @@ class TEMPOMonitor:
         print(f"Product: {short_name} {version}")
         
         try:
-            # Search by point of interest
             results = earthaccess.search_data(
                 short_name=short_name,
                 version=version,
@@ -124,28 +122,44 @@ class TEMPOMonitor:
                 point=(lon, lat),
             )
             
-            print(f"Found {len(results)} granules")
+            # Filter for daytime observations
+            if daytime_only and results:
+                daytime_results = []
+                for r in results:
+                    try:
+                        filename = r.data_links()[0].split("/")[-1]
+                        time_str = filename.split('T')[1].split('Z')[0]
+                        hour = int(time_str[:2])
+                        # TEMPO observes during daylight: roughly 12-22 UTC
+                        if 12 <= hour <= 22:
+                            daytime_results.append(r)
+                    except:
+                        daytime_results.append(r)
+                
+                print(f"Found {len(results)} total granules, {len(daytime_results)} daytime granules")
+                results = daytime_results
+            else:
+                print(f"Found {len(results)} granules")
             
             if results:
-                print("\nAvailable files:")
+                print("\nAvailable files (daytime observations):")
                 for i, r in enumerate(results):
                     try:
                         granule_name = r.data_links()[0].split("/")[-1]
-                        size_mb = r.size() if hasattr(r, 'size') else 'Unknown'
-                        print(f"  {i+1}. {granule_name} ({size_mb} MB)")
+                        time_str = granule_name.split('T')[1].split('Z')[0]
+                        time_formatted = f"{time_str[:2]}:{time_str[2:4]}:{time_str[4:6]} UTC"
+                        print(f"  {i+1}. {time_formatted} - {granule_name}")
                     except:
                         print(f"  {i+1}. {r['meta']['concept-id']}")
             else:
                 print("\n⚠ No data found for this date/location.")
-                print("Note: TEMPO data is available from August 2023 onwards")
-                print("Coverage area: North America (approximately 25°N-55°N, 125°W-65°W)")
             
             return results
             
         except Exception as e:
             print(f"Error searching data: {e}")
             return []
-    
+        
     def download_data(self, results, output_dir="tempo_data", indices=None):
         """
         Download TEMPO data files
@@ -345,6 +359,45 @@ class TEMPOMonitor:
         else:
             plt.show()
 
+    def export_to_csv(self, data, output_file='tempo_data.csv'):
+        """
+        Exporta los datos a un archivo CSV asegurando que todos los arrays tengan la misma longitud
+        """
+        import pandas as pd
+        import numpy as np
+        
+        try:
+            # Obtener las dimensiones
+            trop_shape = data['trop_column'].shape
+            rows = trop_shape[1]  # número de latitudes
+            cols = trop_shape[2]  # número de longitudes
+            
+            # Crear grids de coordenadas
+            lats = np.repeat(data['lat'], cols)
+            lons = np.tile(data['lon'], rows)
+            
+            # Aplanar los arrays asegurando dimensiones consistentes
+            df = pd.DataFrame({
+                'latitude': lats,
+                'longitude': lons,
+                'tropospheric_no2': data['trop_column'][0].flatten(),
+                'stratospheric_no2': data['strat_column'][0].flatten(),
+                'quality_flag': data['quality_flag'][0].flatten(),
+                'units': [data['units']] * len(lats)  # repetir el valor para cada fila
+            })
+            
+            # Guardar a CSV
+            df.to_csv(output_file, index=False)
+            print(f"✓ Data exported successfully to {output_file}")
+            print(f"  Rows: {len(df)}")
+            print(f"  Columns: {len(df.columns)}")
+            
+        except Exception as e:
+            print(f"✗ Error exporting data: {e}")
+            print("Debugging info:")
+            print(f"Trop shape: {data['trop_column'].shape}")
+            print(f"Lat shape: {data['lat'].shape}")
+            print(f"Lon shape: {data['lon'].shape}")
 
 def main():
     """Example usage"""
@@ -383,6 +436,10 @@ def main():
     
     if files:
         # Plot the first file
+        print("Exporting data to CSV...")
+        monitor.export_to_csv(
+            monitor.read_no2_data(files[0])
+        )
         print("\nCreating visualization...")
         monitor.plot_no2(
             files[0],
@@ -391,6 +448,7 @@ def main():
             extent=15.0,
             output_file='tempo_no2_map.png'
         )
+        
     else:
         print("\n⚠ No files downloaded, skipping visualization")
     
