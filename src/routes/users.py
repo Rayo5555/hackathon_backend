@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Form
 from fastapi.responses import StreamingResponse
 from typing import List
-from .. import crud, schemas
+from .. import schemas
 
 router = APIRouter()
 
