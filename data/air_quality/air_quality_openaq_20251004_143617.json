@@ -1,0 +1,1520 @@
+{
+  "extraction_time": "2025-10-04T14:36:17.868115",
+  "source": "openaq",
+  "count": 84,
+  "measurements": [
+    {
+      "parameter": "pm25",
+      "value": 43.12,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 15:36:03.241421",
+      "aqi": 119,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 32.74861719516309,
+        "longitude": -97.39555653225462
+      },
+      "location_name": "Fort Worth Monitor 1",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8218"
+    },
+    {
+      "parameter": "so2",
+      "value": 59.01,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 12:05:38.059199",
+      "aqi": 80,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.852942935370585,
+        "longitude": -97.30467451410146
+      },
+      "location_name": "Fort Worth Monitor 3",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1624"
+    },
+    {
+      "parameter": "no2",
+      "value": 94.7,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 07:59:25.929730",
+      "aqi": 94,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.93762183602249,
+        "longitude": -83.00117599075067
+      },
+      "location_name": "Columbus Monitor 5",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1858"
+    },
+    {
+      "parameter": "pm10",
+      "value": 86.68,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 07:29:50.600308",
+      "aqi": 66,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.40916935918503,
+        "longitude": -121.86552927927745
+      },
+      "location_name": "San Jose Monitor 5",
+      "city": "San Jose",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1555"
+    },
+    {
+      "parameter": "o3",
+      "value": 81.12,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 06:47:26.246252",
+      "aqi": 137,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 39.79349440471165,
+        "longitude": -104.95107502045373
+      },
+      "location_name": "Denver Monitor 3",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6596"
+    },
+    {
+      "parameter": "so2",
+      "value": 69.51,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 21:49:02.447710",
+      "aqi": 93,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.37805184821668,
+        "longitude": -121.84733688712177
+      },
+      "location_name": "San Jose Monitor 4",
+      "city": "San Jose",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1231"
+    },
+    {
+      "parameter": "o3",
+      "value": 126.16,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 03:07:13.245565",
+      "aqi": 222,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 41.95097529086705,
+        "longitude": -87.60777702531828
+      },
+      "location_name": "Chicago Monitor 1",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1131"
+    },
+    {
+      "parameter": "so2",
+      "value": 28.13,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 09:48:46.971741",
+      "aqi": 40,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 39.912043135110416,
+        "longitude": -82.97700605642166
+      },
+      "location_name": "Columbus Monitor 1",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3184"
+    },
+    {
+      "parameter": "o3",
+      "value": 10.52,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 03:11:17.042874",
+      "aqi": 9,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 30.266590776146273,
+        "longitude": -81.56837235861303
+      },
+      "location_name": "Jacksonville Monitor 5",
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3495"
+    },
+    {
+      "parameter": "o3",
+      "value": 175.27,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 16:15:13.687626",
+      "aqi": 273,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 32.84096498734264,
+        "longitude": -97.39784259250398
+      },
+      "location_name": "Fort Worth Monitor 2",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8148"
+    },
+    {
+      "parameter": "pm25",
+      "value": 11.46,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 23:41:16.030952",
+      "aqi": 47,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.68813306463859,
+        "longitude": -117.19236460145329
+      },
+      "location_name": "San Diego Monitor 1",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5636"
+    },
+    {
+      "parameter": "no2",
+      "value": 15.42,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 23:15:14.984070",
+      "aqi": 14,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 39.66959508321661,
+        "longitude": -104.9652143611569
+      },
+      "location_name": "Denver Monitor 2",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4582"
+    },
+    {
+      "parameter": "o3",
+      "value": 61.43,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 01:40:53.243135",
+      "aqi": 73,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.85770112413096,
+        "longitude": -75.07525472632356
+      },
+      "location_name": "Philadelphia Monitor 3",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5055"
+    },
+    {
+      "parameter": "co",
+      "value": 6.17,
+      "unit": "ppm",
+      "last_updated": "2025-10-03 16:35:22.430176",
+      "aqi": 67,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 29.764632680098867,
+        "longitude": -95.37849649516419
+      },
+      "location_name": "Houston Monitor 2",
+      "city": "Houston",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8301"
+    },
+    {
+      "parameter": "no2",
+      "value": 46.58,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 15:26:44.530764",
+      "aqi": 43,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 35.23636361166776,
+        "longitude": -80.8650041243171
+      },
+      "location_name": "Charlotte Monitor 2",
+      "city": "Charlotte",
+      "state": "NC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1756"
+    },
+    {
+      "parameter": "pm10",
+      "value": 53.57,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 09:02:01.388835",
+      "aqi": 49,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 33.4775317237492,
+        "longitude": -112.01755769240926
+      },
+      "location_name": "Phoenix Monitor 3",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1817"
+    },
+    {
+      "parameter": "co",
+      "value": 3.17,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 09:46:52.269495",
+      "aqi": 35,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 40.017166287848546,
+        "longitude": -82.98227102902963
+      },
+      "location_name": "Columbus Monitor 2",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_2399"
+    },
+    {
+      "parameter": "o3",
+      "value": 81.44,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 13:26:22.557034",
+      "aqi": 138,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 38.84680860735169,
+        "longitude": -77.08499685043317
+      },
+      "location_name": "Washington Monitor 2",
+      "city": "Washington",
+      "state": "DC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1568"
+    },
+    {
+      "parameter": "no2",
+      "value": 24.18,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 09:48:49.192280",
+      "aqi": 22,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 33.485750135620606,
+        "longitude": -112.010690782121
+      },
+      "location_name": "Phoenix Monitor 3",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3786"
+    },
+    {
+      "parameter": "no2",
+      "value": 36.02,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 05:06:10.507365",
+      "aqi": 33,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.79664991467272,
+        "longitude": -117.07689491536232
+      },
+      "location_name": "San Diego Monitor 4",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1441"
+    },
+    {
+      "parameter": "co",
+      "value": 3.54,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 03:16:51.642658",
+      "aqi": 40,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.73600307275347,
+        "longitude": -97.3146807787082
+      },
+      "location_name": "Fort Worth Monitor 2",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4505"
+    },
+    {
+      "parameter": "pm25",
+      "value": 47.47,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 20:02:41.826270",
+      "aqi": 129,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 41.976384388135806,
+        "longitude": -87.53087133069084
+      },
+      "location_name": "Chicago Monitor 3",
+      "city": "Chicago",
+      "state": "IL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4704"
+    },
+    {
+      "parameter": "pm10",
+      "value": 139.59,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 00:18:02.647398",
+      "aqi": 92,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 33.99302787189971,
+        "longitude": -118.22675541215605
+      },
+      "location_name": "Los Angeles Monitor 1",
+      "city": "Los Angeles",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5875"
+    },
+    {
+      "parameter": "so2",
+      "value": 1.14,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 10:09:01.951558",
+      "aqi": 1,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 30.319577317103953,
+        "longitude": -97.79368246558545
+      },
+      "location_name": "Austin Monitor 4",
+      "city": "Austin",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7385"
+    },
+    {
+      "parameter": "pm25",
+      "value": 10.9,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 00:43:20.696193",
+      "aqi": 45,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 37.698342237259666,
+        "longitude": -122.47936008647498
+      },
+      "location_name": "San Francisco Monitor 5",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7302"
+    },
+    {
+      "parameter": "co",
+      "value": 8.55,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 06:46:31.840096",
+      "aqi": 91,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.65201943462549,
+        "longitude": -117.14768109066577
+      },
+      "location_name": "San Diego Monitor 5",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4795"
+    },
+    {
+      "parameter": "co",
+      "value": 7.1,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 08:18:36.573214",
+      "aqi": 76,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.35249093849004,
+        "longitude": -121.89339949132113
+      },
+      "location_name": "San Jose Monitor 3",
+      "city": "San Jose",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1136"
+    },
+    {
+      "parameter": "no2",
+      "value": 62.37,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 10:50:50.361237",
+      "aqi": 59,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.76403896011011,
+        "longitude": -122.51260699371417
+      },
+      "location_name": "San Francisco Monitor 5",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8920"
+    },
+    {
+      "parameter": "pm25",
+      "value": 31.32,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 04:01:27.763066",
+      "aqi": 91,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 30.279942223262957,
+        "longitude": -81.60892355908469
+      },
+      "location_name": "Jacksonville Monitor 4",
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4545"
+    },
+    {
+      "parameter": "pm25",
+      "value": 48.92,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 14:49:41.720240",
+      "aqi": 133,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 35.29305942905187,
+        "longitude": -80.90707787992466
+      },
+      "location_name": "Charlotte Monitor 3",
+      "city": "Charlotte",
+      "state": "NC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4364"
+    },
+    {
+      "parameter": "o3",
+      "value": 114.49,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 16:58:13.857932",
+      "aqi": 209,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 33.384056085866064,
+        "longitude": -112.16738007481804
+      },
+      "location_name": "Phoenix Monitor 3",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5535"
+    },
+    {
+      "parameter": "no2",
+      "value": 89.87,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 07:47:30.181043",
+      "aqi": 89,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 38.80834741456266,
+        "longitude": -77.10362984023577
+      },
+      "location_name": "Washington Monitor 1",
+      "city": "Washington",
+      "state": "DC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7323"
+    },
+    {
+      "parameter": "co",
+      "value": 4.3,
+      "unit": "ppm",
+      "last_updated": "2025-10-03 17:10:48.901572",
+      "aqi": 48,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 30.20577565895869,
+        "longitude": -97.77993272552706
+      },
+      "location_name": "Austin Monitor 1",
+      "city": "Austin",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7683"
+    },
+    {
+      "parameter": "no2",
+      "value": 50.21,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 11:22:34.999458",
+      "aqi": 47,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 40.6931140116455,
+        "longitude": -73.92099180888545
+      },
+      "location_name": "New York Monitor 1",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8646"
+    },
+    {
+      "parameter": "pm25",
+      "value": 7.11,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 06:52:02.016725",
+      "aqi": 29,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 33.46596900636622,
+        "longitude": -112.16582074864994
+      },
+      "location_name": "Phoenix Monitor 4",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3250"
+    },
+    {
+      "parameter": "pm10",
+      "value": 81.19,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 11:19:55.742175",
+      "aqi": 63,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 30.385021426286453,
+        "longitude": -81.59698031529402
+      },
+      "location_name": "Jacksonville Monitor 2",
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1671"
+    },
+    {
+      "parameter": "no2",
+      "value": 28.28,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 13:27:14.712799",
+      "aqi": 26,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.6883725288107,
+        "longitude": -117.15521802372135
+      },
+      "location_name": "San Diego Monitor 1",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1188"
+    },
+    {
+      "parameter": "pm25",
+      "value": 12.91,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 22:45:10.153327",
+      "aqi": 51,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 29.486020333811357,
+        "longitude": -98.54295705139315
+      },
+      "location_name": "San Antonio Monitor 1",
+      "city": "San Antonio",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_2497"
+    },
+    {
+      "parameter": "so2",
+      "value": 22.1,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 22:47:21.941343",
+      "aqi": 31,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 30.21823854100539,
+        "longitude": -97.70411113726792
+      },
+      "location_name": "Austin Monitor 2",
+      "city": "Austin",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4007"
+    },
+    {
+      "parameter": "so2",
+      "value": 50.19,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 17:17:27.113296",
+      "aqi": 68,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 40.0294768862479,
+        "longitude": -82.92697485662502
+      },
+      "location_name": "Columbus Monitor 5",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1164"
+    },
+    {
+      "parameter": "co",
+      "value": 2.61,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 02:30:43.454793",
+      "aqi": 29,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 33.35029990412107,
+        "longitude": -112.07675161457954
+      },
+      "location_name": "Phoenix Monitor 3",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7873"
+    },
+    {
+      "parameter": "no2",
+      "value": 89.58,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 09:41:31.578215",
+      "aqi": 88,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.685199507852595,
+        "longitude": -86.21728808059174
+      },
+      "location_name": "Indianapolis Monitor 2",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1694"
+    },
+    {
+      "parameter": "o3",
+      "value": 146.75,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 13:56:58.351854",
+      "aqi": 243,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 35.27665105751454,
+        "longitude": -80.83257902062742
+      },
+      "location_name": "Charlotte Monitor 1",
+      "city": "Charlotte",
+      "state": "NC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3633"
+    },
+    {
+      "parameter": "so2",
+      "value": 12.38,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 19:02:19.756387",
+      "aqi": 17,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 39.82793585264897,
+        "longitude": -86.06168694655618
+      },
+      "location_name": "Indianapolis Monitor 2",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1816"
+    },
+    {
+      "parameter": "pm25",
+      "value": 44.06,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 06:48:53.622868",
+      "aqi": 121,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 32.745726971439666,
+        "longitude": -96.72498770602427
+      },
+      "location_name": "Dallas Monitor 3",
+      "city": "Dallas",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6204"
+    },
+    {
+      "parameter": "so2",
+      "value": 46.78,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 17:38:36.299551",
+      "aqi": 64,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.93064755901398,
+        "longitude": -75.12871467210871
+      },
+      "location_name": "Philadelphia Monitor 2",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8134"
+    },
+    {
+      "parameter": "so2",
+      "value": 7.4,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 04:26:12.547346",
+      "aqi": 10,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 35.217145745122004,
+        "longitude": -80.75054381811778
+      },
+      "location_name": "Charlotte Monitor 5",
+      "city": "Charlotte",
+      "state": "NC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6549"
+    },
+    {
+      "parameter": "o3",
+      "value": 151.57,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 13:57:45.150834",
+      "aqi": 249,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 37.436938441598706,
+        "longitude": -121.96317711191506
+      },
+      "location_name": "San Jose Monitor 2",
+      "city": "San Jose",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4766"
+    },
+    {
+      "parameter": "o3",
+      "value": 174.6,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 06:49:44.049662",
+      "aqi": 273,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 32.79185918207719,
+        "longitude": -97.38918579383659
+      },
+      "location_name": "Fort Worth Monitor 4",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1379"
+    },
+    {
+      "parameter": "no2",
+      "value": 77.27,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 02:54:55.792323",
+      "aqi": 75,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.92811208984155,
+        "longitude": -83.05516955029795
+      },
+      "location_name": "Columbus Monitor 3",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3557"
+    },
+    {
+      "parameter": "pm25",
+      "value": 30.57,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 13:57:48.256180",
+      "aqi": 89,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.7496726315217,
+        "longitude": -97.39461735899712
+      },
+      "location_name": "Fort Worth Monitor 2",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9692"
+    },
+    {
+      "parameter": "no2",
+      "value": 15.04,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 14:23:59.366361",
+      "aqi": 14,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 38.92324469590854,
+        "longitude": -76.9559784448769
+      },
+      "location_name": "Washington Monitor 3",
+      "city": "Washington",
+      "state": "DC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9591"
+    },
+    {
+      "parameter": "co",
+      "value": 0.58,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 06:23:03.156429",
+      "aqi": 6,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 39.85491339573336,
+        "longitude": -86.17142109025244
+      },
+      "location_name": "Indianapolis Monitor 1",
+      "city": "Indianapolis",
+      "state": "IN",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9748"
+    },
+    {
+      "parameter": "pm25",
+      "value": 15.24,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 07:28:03.386685",
+      "aqi": 56,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.95612376238472,
+        "longitude": -75.09829375854711
+      },
+      "location_name": "Philadelphia Monitor 4",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3243"
+    },
+    {
+      "parameter": "no2",
+      "value": 58.47,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 09:58:19.828378",
+      "aqi": 55,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.70114279687872,
+        "longitude": -104.93283615668011
+      },
+      "location_name": "Denver Monitor 4",
+      "city": "Denver",
+      "state": "CO",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5637"
+    },
+    {
+      "parameter": "pm10",
+      "value": 126.21,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 19:20:37.464825",
+      "aqi": 86,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.734803997152724,
+        "longitude": -96.73410620994694
+      },
+      "location_name": "Dallas Monitor 4",
+      "city": "Dallas",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6315"
+    },
+    {
+      "parameter": "co",
+      "value": 8.05,
+      "unit": "ppm",
+      "last_updated": "2025-10-03 22:28:49.348054",
+      "aqi": 86,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 40.74382566573331,
+        "longitude": -73.94950382194484
+      },
+      "location_name": "New York Monitor 5",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5204"
+    },
+    {
+      "parameter": "pm25",
+      "value": 34.78,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 13:14:40.887000",
+      "aqi": 98,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.738648534959275,
+        "longitude": -122.4326079107179
+      },
+      "location_name": "San Francisco Monitor 1",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4354"
+    },
+    {
+      "parameter": "no2",
+      "value": 61.48,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 09:47:02.868867",
+      "aqi": 59,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 30.359532279602213,
+        "longitude": -97.66275321402019
+      },
+      "location_name": "Austin Monitor 4",
+      "city": "Austin",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7625"
+    },
+    {
+      "parameter": "so2",
+      "value": 16.85,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 13:05:06.406535",
+      "aqi": 24,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.674166031040606,
+        "longitude": -117.19558590753073
+      },
+      "location_name": "San Diego Monitor 2",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9320"
+    },
+    {
+      "parameter": "o3",
+      "value": 34.86,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 15:56:29.397930",
+      "aqi": 32,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 35.26092756302789,
+        "longitude": -80.89893451496542
+      },
+      "location_name": "Charlotte Monitor 5",
+      "city": "Charlotte",
+      "state": "NC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6135"
+    },
+    {
+      "parameter": "pm10",
+      "value": 116.79,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 10:43:15.550987",
+      "aqi": 81,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.864067481011574,
+        "longitude": -96.72473068642593
+      },
+      "location_name": "Dallas Monitor 3",
+      "city": "Dallas",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6939"
+    },
+    {
+      "parameter": "no2",
+      "value": 33.19,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 15:14:49.435200",
+      "aqi": 31,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 39.8557147919314,
+        "longitude": -75.11495277461287
+      },
+      "location_name": "Philadelphia Monitor 2",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8582"
+    },
+    {
+      "parameter": "o3",
+      "value": 136.73,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 07:53:15.266322",
+      "aqi": 233,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 30.29619755108297,
+        "longitude": -81.67742968995796
+      },
+      "location_name": "Jacksonville Monitor 3",
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1070"
+    },
+    {
+      "parameter": "co",
+      "value": 7.77,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 09:28:48.602591",
+      "aqi": 83,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 40.02112351781322,
+        "longitude": -82.98190028564623
+      },
+      "location_name": "Columbus Monitor 2",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4226"
+    },
+    {
+      "parameter": "so2",
+      "value": 56.44,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 10:07:40.111172",
+      "aqi": 76,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.69696074009125,
+        "longitude": -96.76383305862682
+      },
+      "location_name": "Dallas Monitor 1",
+      "city": "Dallas",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3708"
+    },
+    {
+      "parameter": "pm10",
+      "value": 88.75,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 10:22:16.878945",
+      "aqi": 67,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.823490749600715,
+        "longitude": -97.26971918422407
+      },
+      "location_name": "Fort Worth Monitor 5",
+      "city": "Fort Worth",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6715"
+    },
+    {
+      "parameter": "so2",
+      "value": 53.86,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 00:00:07.688373",
+      "aqi": 73,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 40.629132974689284,
+        "longitude": -73.93939232743419
+      },
+      "location_name": "New York Monitor 2",
+      "city": "New York",
+      "state": "NY",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9398"
+    },
+    {
+      "parameter": "co",
+      "value": 6.09,
+      "unit": "ppm",
+      "last_updated": "2025-10-03 20:28:49.061398",
+      "aqi": 66,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 30.419109772871167,
+        "longitude": -81.66152276777281
+      },
+      "location_name": "Jacksonville Monitor 3",
+      "city": "Jacksonville",
+      "state": "FL",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4783"
+    },
+    {
+      "parameter": "co",
+      "value": 4.84,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 09:56:13.776060",
+      "aqi": 54,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.69098993246809,
+        "longitude": -122.4367611697797
+      },
+      "location_name": "San Francisco Monitor 3",
+      "city": "San Francisco",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_6159"
+    },
+    {
+      "parameter": "pm25",
+      "value": 2.06,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-03 18:26:49.579714",
+      "aqi": 8,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 35.30672844472396,
+        "longitude": -80.75222200141904
+      },
+      "location_name": "Charlotte Monitor 5",
+      "city": "Charlotte",
+      "state": "NC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9545"
+    },
+    {
+      "parameter": "pm10",
+      "value": 53.79,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 08:39:31.727495",
+      "aqi": 49,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 29.769614723479467,
+        "longitude": -95.32580868463776
+      },
+      "location_name": "Houston Monitor 2",
+      "city": "Houston",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5099"
+    },
+    {
+      "parameter": "no2",
+      "value": 84.15,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 00:01:33.860100",
+      "aqi": 83,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 30.278722413529135,
+        "longitude": -97.8276285337692
+      },
+      "location_name": "Austin Monitor 2",
+      "city": "Austin",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1322"
+    },
+    {
+      "parameter": "o3",
+      "value": 54.45,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 09:34:20.543538",
+      "aqi": 51,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 37.24433892861195,
+        "longitude": -121.81989005432331
+      },
+      "location_name": "San Jose Monitor 3",
+      "city": "San Jose",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_3326"
+    },
+    {
+      "parameter": "pm25",
+      "value": 23.0,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 06:03:23.813730",
+      "aqi": 73,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 39.995257181510425,
+        "longitude": -75.26492944801454
+      },
+      "location_name": "Philadelphia Monitor 5",
+      "city": "Philadelphia",
+      "state": "PA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1280"
+    },
+    {
+      "parameter": "co",
+      "value": 6.71,
+      "unit": "ppm",
+      "last_updated": "2025-10-04 09:12:44.660669",
+      "aqi": 73,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 29.523075640928628,
+        "longitude": -98.39694890769158
+      },
+      "location_name": "San Antonio Monitor 1",
+      "city": "San Antonio",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9867"
+    },
+    {
+      "parameter": "so2",
+      "value": 10.52,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 10:00:04.804011",
+      "aqi": 15,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 37.26070213776058,
+        "longitude": -121.92893758890617
+      },
+      "location_name": "San Jose Monitor 3",
+      "city": "San Jose",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8785"
+    },
+    {
+      "parameter": "no2",
+      "value": 10.49,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 06:53:25.483282",
+      "aqi": 9,
+      "category": "Good",
+      "coordinates": {
+        "latitude": 32.78935051194073,
+        "longitude": -96.76406158761466
+      },
+      "location_name": "Dallas Monitor 4",
+      "city": "Dallas",
+      "state": "TX",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_8663"
+    },
+    {
+      "parameter": "pm25",
+      "value": 41.92,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 11:38:39.495051",
+      "aqi": 116,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 32.70166587603685,
+        "longitude": -117.21773069854144
+      },
+      "location_name": "San Diego Monitor 1",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5404"
+    },
+    {
+      "parameter": "pm25",
+      "value": 21.82,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 04:37:48.290559",
+      "aqi": 70,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 47.677995791354235,
+        "longitude": -122.36850629032426
+      },
+      "location_name": "Seattle Monitor 2",
+      "city": "Seattle",
+      "state": "WA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_7645"
+    },
+    {
+      "parameter": "pm25",
+      "value": 44.21,
+      "unit": "µg/m³",
+      "last_updated": "2025-10-04 03:34:47.568499",
+      "aqi": 121,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 39.92687460764063,
+        "longitude": -83.0588663130366
+      },
+      "location_name": "Columbus Monitor 4",
+      "city": "Columbus",
+      "state": "OH",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_4003"
+    },
+    {
+      "parameter": "co",
+      "value": 10.74,
+      "unit": "ppm",
+      "last_updated": "2025-10-03 23:59:09.532939",
+      "aqi": 122,
+      "category": "Unhealthy for Sensitive Groups",
+      "coordinates": {
+        "latitude": 33.35607603820484,
+        "longitude": -112.04231655589217
+      },
+      "location_name": "Phoenix Monitor 5",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_5014"
+    },
+    {
+      "parameter": "no2",
+      "value": 70.55,
+      "unit": "ppb",
+      "last_updated": "2025-10-04 02:28:08.780022",
+      "aqi": 68,
+      "category": "Moderate",
+      "coordinates": {
+        "latitude": 32.63208408526803,
+        "longitude": -117.21249732648987
+      },
+      "location_name": "San Diego Monitor 2",
+      "city": "San Diego",
+      "state": "CA",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_1073"
+    },
+    {
+      "parameter": "o3",
+      "value": 141.85,
+      "unit": "ppb",
+      "last_updated": "2025-10-03 18:22:05.576791",
+      "aqi": 238,
+      "category": "Very Unhealthy",
+      "coordinates": {
+        "latitude": 38.830310009570326,
+        "longitude": -76.94849496320246
+      },
+      "location_name": "Washington Monitor 4",
+      "city": "Washington",
+      "state": "DC",
+      "country": "US",
+      "source": "openaq",
+      "site_id": "openaq_9531"
+    }
+  ],
+  "note": "Datos simulados para demostración"
+}
