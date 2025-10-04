@@ -608,3 +608,122 @@ class OpenAQClient:
                     }
         
         return results
+
+    async def get_all_locations_in_bbox_with_measurements(
+        self,
+        bbox: str,
+        limit: int = 1000
+    ) -> Dict[str, Any]:
+        """
+        Get all monitoring locations within a bounding box with their pollution measurements
+        
+        Args:
+            bbox: Bounding box in format "min_lon,min_lat,max_lon,max_lat"
+            limit: Maximum number of locations to return
+            
+        Returns:
+            Dictionary with list of locations and their pollution measurements
+        """
+        # Get all locations within the bounding box
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            locations_response = await client.get(
+                f"{self.BASE_URL}/locations",
+                params={"limit": limit, "bbox": bbox},
+                headers=self._get_headers()
+            )
+            locations_response.raise_for_status()
+            locations_data = locations_response.json()
+        
+        all_locations = locations_data.get("results", [])
+        
+        if not all_locations:
+            return {
+                "found": False,
+                "message": "No monitoring locations found in the specified area",
+                "bbox": bbox,
+                "total_locations": 0,
+                "locations": []
+            }
+        
+        # For each location, fetch measurements for all parameters
+        locations_with_measurements = []
+        
+        async with httpx.AsyncClient(timeout=self.timeout) as client:
+            for location in all_locations:
+                location_id = location.get("id")
+                
+                location_info = {
+                    "location_id": location_id,
+                    "name": location.get("name"),
+                    "locality": location.get("locality"),
+                    "coordinates": location.get("coordinates"),
+                    "country": location.get("country", {}).get("name"),
+                    "measurements": {}
+                }
+                
+                # Fetch measurements for all parameters concurrently
+                async def fetch_parameter(param_name: str, param_id: int):
+                    try:
+                        measurements_response = await client.get(
+                            f"{self.BASE_URL}/parameters/{param_id}/latest",
+                            params={"locations_id": location_id, "limit": 10},
+                            headers=self._get_headers()
+                        )
+                        measurements_response.raise_for_status()
+                        param_data = measurements_response.json()
+                        
+                        measurements_list = param_data.get("results", [])
+                        
+                        if measurements_list:
+                            latest = measurements_list[0]
+                            return (param_name, {
+                                "parameter_id": param_id,
+                                "parameter_name": param_name.upper(),
+                                "latest_value": latest.get("value"),
+                                "unit": latest.get("parameter", {}).get("units", "N/A"),
+                                "datetime": latest.get("datetime", {}),
+                                "total_measurements": len(measurements_list),
+                                "available": True
+                            })
+                        else:
+                            return (param_name, {
+                                "parameter_id": param_id,
+                                "parameter_name": param_name.upper(),
+                                "available": False
+                            })
+                    except Exception as e:
+                        return (param_name, {
+                            "parameter_id": param_id,
+                            "parameter_name": param_name.upper(),
+                            "available": False,
+                            "error": str(e)
+                        })
+                
+                # Fetch all parameters concurrently for this location
+                tasks = [fetch_parameter(param_name, param_id) for param_name, param_id in self.PARAMETERS.items()]
+                param_results = await asyncio.gather(*tasks)
+                
+                # Add measurement results
+                for param_name, param_data in param_results:
+                    location_info["measurements"][param_name] = param_data
+                
+                # Calculate summary statistics
+                available_measurements = sum(1 for _, data in param_results if data.get("available", False))
+                location_info["measurements_summary"] = {
+                    "total_parameters": len(self.PARAMETERS),
+                    "available_parameters": available_measurements,
+                    "missing_parameters": len(self.PARAMETERS) - available_measurements
+                }
+                
+                locations_with_measurements.append(location_info)
+        
+        return {
+            "found": True,
+            "bbox": bbox,
+            "total_locations": len(locations_with_measurements),
+            "locations": locations_with_measurements,
+            "summary": {
+                "total_locations_found": len(locations_with_measurements),
+                "parameters_monitored": list(self.PARAMETERS.keys())
+            }
+        }
