@@ -1,10 +1,7 @@
-from fastapi import APIRouter, Form
-from fastapi.responses import StreamingResponse
-from typing import List
-from .. import schemas
+from fastapi import APIRouter
 
 router = APIRouter()
 
-@router.post("/algo", response_model = schemas.reclamoRead)
-async def algo(user: schemas.algo = Form(...)):
+@router.get("/algo")
+async def algo():
     return 0
