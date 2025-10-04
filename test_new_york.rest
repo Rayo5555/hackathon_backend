@@ -1,0 +1,58 @@
+### Test con New York
+
+### Test 1: Buscar ubicaciones en New York (usando estado de New York)
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=New York&state=new_york
+Accept: application/json
+
+
+### Test 2: Buscar con nombre más específico - "CCNY" (City College of New York)
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=CCNY&state=new_york
+Accept: application/json
+
+
+### Test 3: Buscar ubicaciones con "Manhattan"
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=Manhattan&state=new_york
+Accept: application/json
+
+
+### Test 4: Buscar ubicaciones con "Queens"
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=Queens&state=new_york
+Accept: application/json
+
+
+### Test 5: Obtener mediciones de CO (parameter 8) en el área de New York
+GET http://localhost:8000/air-quality/measurements/by-parameter/8?bbox=-74.3,40.4,-73.7,40.9&limit=20
+Accept: application/json
+
+
+### Test 6: Buscar "New York" sin especificar estado (búsqueda en todo USA)
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=New York
+Accept: application/json
+
+
+### Test 7: TERCERA API - Todo el estado de New York
+### Obtiene TODAS las estaciones de monitoreo con sus mediciones
+GET http://localhost:8000/air-quality/locations/in-area?bbox=-79.76,40.50,-71.86,45.01&limit=100
+Accept: application/json
+
+
+### Test 8: TERCERA API - Solo New York City (área metropolitana)
+### Bbox reducido para evitar demasiadas peticiones
+GET http://localhost:8000/air-quality/locations/in-area?bbox=-74.3,40.4,-73.7,40.9&limit=50
+Accept: application/json
+
+
+### Test 9: TERCERA API - Solo Manhattan (área más pequeña)
+### Ideal para pruebas rápidas
+GET http://localhost:8000/air-quality/locations/in-area?bbox=-74.02,40.70,-73.93,40.88&limit=30
+Accept: application/json
+
+
+### Test 10: TERCERA API - Buffalo, NY
+GET http://localhost:8000/air-quality/locations/in-area?bbox=-78.95,42.80,-78.75,43.00&limit=20
+Accept: application/json
+
+
+### Test 11: TERCERA API - Albany, NY (capital)
+GET http://localhost:8000/air-quality/locations/in-area?bbox=-73.85,42.55,-73.65,42.75&limit=20
+Accept: application/json
