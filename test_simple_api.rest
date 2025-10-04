@@ -1,0 +1,31 @@
+### API 2 - Búsqueda simplificada (SIN bbox manual!)
+
+### 1. Buscar en TODO Estados Unidos (automático)
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=new york
+
+### 2. Buscar Denver (todo USA)
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=denver
+
+### 3. Buscar en un estado específico (New York)
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=buffalo&state=new_york
+
+### 4. Buscar en California
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=los angeles&state=california
+
+### 5. Buscar en Texas
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=houston&state=texas
+
+### 6. Buscar en Florida
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=miami&state=florida
+
+### 7. Buscar Chicago en Illinois
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=chicago&state=illinois
+
+### 8. Si aún necesitas bbox personalizado (opcional)
+GET http://localhost:8000/air-quality/measurements/by-location-name?location_name=rifle&bbox=-109.05,37,-102.04,41
+
+### Ver documentación interactiva
+GET http://localhost:8000/docs
+
+### API 1 - Measurements por parámetro (sin cambios)
+GET http://localhost:8000/air-quality/measurements/by-parameter/2?bbox=-109.05,37,-102.04,41&limit=100

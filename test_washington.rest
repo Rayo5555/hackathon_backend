@@ -1,0 +1,7 @@
+### Esta API te devuelve TODAS las ubicaciones en el estado de Washington
+### con las mediciones de PM10, PM2.5, NO2, CO, SO2, O3 de cada una
+
+GET http://localhost:8000/air-quality/locations/in-area?bbox=-124.85,45.54,-116.92,49.00&limit=100
+
+### Para comparar - Solo el área de Seattle
+GET http://localhost:8000/air-quality/locations/in-area?bbox=-122.5,47.4,-122.2,47.8&limit=100

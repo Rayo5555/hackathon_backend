@@ -375,65 +375,84 @@ class OpenAQClient:
                 for loc in matching_locations[1:6]  # Show up to 5 other matches
             ]
         
-        # Fetch measurements for all parameters (create new client context)
+        # Fetch measurements for all parameters using /locations/{id} endpoint first
+        # to get sensor mapping, then /locations/{id}/latest for actual values
         async with httpx.AsyncClient(timeout=self.timeout) as client:
-            # Define async function to fetch one parameter
-            async def fetch_parameter(param_name: str, param_id: int):
-                try:
-                    # Get latest measurements for this parameter
-                    measurements_response = await client.get(
-                        f"{self.BASE_URL}/parameters/{param_id}/latest",
-                        params={"locations_id": location_id, "limit": 100},
-                        headers=self._get_headers()
-                    )
-                    measurements_response.raise_for_status()
-                    param_data = measurements_response.json()
+            try:
+                # Step 1: Get location info with sensor mapping
+                location_info_response = await client.get(
+                    f"{self.BASE_URL}/locations/{location_id}",
+                    headers=self._get_headers()
+                )
+                location_info_response.raise_for_status()
+                location_info_data = location_info_response.json()
+                location_details = location_info_data.get("results", [{}])[0]
+                
+                # Create mapping: sensor_id -> parameter_id
+                sensor_to_param = {}
+                for sensor in location_details.get("sensors", []):
+                    sensor_id = sensor.get("id")
+                    param_info = sensor.get("parameter", {})
+                    param_id = param_info.get("id")
+                    if sensor_id and param_id:
+                        sensor_to_param[sensor_id] = {
+                            "parameter_id": param_id,
+                            "units": param_info.get("units", "N/A")
+                        }
+                
+                # Step 2: Get ALL latest measurements for this specific location
+                measurements_response = await client.get(
+                    f"{self.BASE_URL}/locations/{location_id}/latest",
+                    headers=self._get_headers()
+                )
+                measurements_response.raise_for_status()
+                location_data = measurements_response.json()
+                
+                measurements_list = location_data.get("results", [])
+                
+                # Create a map of parameterId -> measurement data using sensor mapping
+                param_id_to_name = {v: k for k, v in self.PARAMETERS.items()}
+                
+                # Initialize all parameters as not available
+                for param_name in self.PARAMETERS.keys():
+                    results["measurements"][param_name] = {
+                        "parameter_id": self.PARAMETERS[param_name],
+                        "parameter_name": param_name.upper(),
+                        "available": False,
+                        "message": "No measurements available for this parameter"
+                    }
+                
+                # Fill in the available measurements using sensor mapping
+                for measurement in measurements_list:
+                    sensor_id = measurement.get("sensorsId")
                     
-                    measurements_list = param_data.get("results", [])
-                    
-                    if measurements_list:
-                        # Get the latest measurement
-                        latest = measurements_list[0]
+                    # Get parameter info from sensor mapping
+                    sensor_info = sensor_to_param.get(sensor_id)
+                    if not sensor_info:
+                        continue
                         
-                        return (param_name, {
+                    param_id = sensor_info["parameter_id"]
+                    param_name = param_id_to_name.get(param_id)
+                    
+                    if param_name:
+                        results["measurements"][param_name] = {
                             "parameter_id": param_id,
                             "parameter_name": param_name.upper(),
-                            "latest_value": latest.get("value"),
-                            "unit": latest.get("parameter", {}).get("units", "N/A"),
-                            "datetime": latest.get("datetime", {}),
-                            "total_measurements_available": len(measurements_list),
-                            "available": True,
-                            "all_measurements": [
-                                {
-                                    "value": m.get("value"),
-                                    "datetime": m.get("datetime", {}).get("utc")
-                                }
-                                for m in measurements_list[:10]  # Include last 10 measurements
-                            ]
-                        })
-                    else:
-                        return (param_name, {
-                            "parameter_id": param_id,
-                            "parameter_name": param_name.upper(),
-                            "available": False,
-                            "message": "No measurements available for this parameter"
-                        })
-                        
-                except httpx.HTTPError as e:
-                    return (param_name, {
+                            "latest_value": measurement.get("value"),
+                            "unit": sensor_info["units"],
+                            "datetime": measurement.get("datetime", {}),
+                            "available": True
+                        }
+                
+            except httpx.HTTPError as e:
+                # If fetching fails, mark all parameters as unavailable
+                for param_name, param_id in self.PARAMETERS.items():
+                    results["measurements"][param_name] = {
                         "parameter_id": param_id,
                         "parameter_name": param_name.upper(),
                         "available": False,
                         "error": f"Could not fetch data: {str(e)}"
-                    })
-            
-            # Fetch all parameters concurrently
-            tasks = [fetch_parameter(param_name, param_id) for param_name, param_id in self.PARAMETERS.items()]
-            param_results = await asyncio.gather(*tasks)
-            
-            # Add results to the measurements dict
-            for param_name, param_data in param_results:
-                results["measurements"][param_name] = param_data
+                    }
         
         return results
 
@@ -661,54 +680,87 @@ class OpenAQClient:
                     "measurements": {}
                 }
                 
-                # Fetch measurements for all parameters concurrently
-                async def fetch_parameter(param_name: str, param_id: int):
-                    try:
-                        measurements_response = await client.get(
-                            f"{self.BASE_URL}/parameters/{param_id}/latest",
-                            params={"locations_id": location_id, "limit": 10},
-                            headers=self._get_headers()
-                        )
-                        measurements_response.raise_for_status()
-                        param_data = measurements_response.json()
+                # Fetch location details to get sensor mapping, then get latest measurements
+                try:
+                    # Step 1: Get location info with sensor mapping
+                    location_info_response = await client.get(
+                        f"{self.BASE_URL}/locations/{location_id}",
+                        headers=self._get_headers()
+                    )
+                    location_info_response.raise_for_status()
+                    location_info_data = location_info_response.json()
+                    location_details = location_info_data.get("results", [{}])[0]
+                    
+                    # Create mapping: sensor_id -> parameter_id
+                    sensor_to_param = {}
+                    for sensor in location_details.get("sensors", []):
+                        sensor_id = sensor.get("id")
+                        param_info = sensor.get("parameter", {})
+                        param_id = param_info.get("id")
+                        if sensor_id and param_id:
+                            sensor_to_param[sensor_id] = {
+                                "parameter_id": param_id,
+                                "units": param_info.get("units", "N/A")
+                            }
+                    
+                    # Step 2: Get latest measurements
+                    measurements_response = await client.get(
+                        f"{self.BASE_URL}/locations/{location_id}/latest",
+                        headers=self._get_headers()
+                    )
+                    measurements_response.raise_for_status()
+                    location_data = measurements_response.json()
+                    
+                    measurements_list = location_data.get("results", [])
+                    
+                    # Create a map of parameterId -> measurement data using sensor mapping
+                    param_id_to_name = {v: k for k, v in self.PARAMETERS.items()}
+                    
+                    # Initialize all parameters as not available
+                    for param_name in self.PARAMETERS.keys():
+                        location_info["measurements"][param_name] = {
+                            "parameter_id": self.PARAMETERS[param_name],
+                            "parameter_name": param_name.upper(),
+                            "available": False
+                        }
+                    
+                    # Fill in the available measurements using sensor mapping
+                    for measurement in measurements_list:
+                        sensor_id = measurement.get("sensorsId")
                         
-                        measurements_list = param_data.get("results", [])
+                        # Get parameter info from sensor mapping
+                        sensor_info = sensor_to_param.get(sensor_id)
+                        if not sensor_info:
+                            continue
+                            
+                        param_id = sensor_info["parameter_id"]
+                        param_name = param_id_to_name.get(param_id)
                         
-                        if measurements_list:
-                            latest = measurements_list[0]
-                            return (param_name, {
+                        if param_name:
+                            location_info["measurements"][param_name] = {
                                 "parameter_id": param_id,
                                 "parameter_name": param_name.upper(),
-                                "latest_value": latest.get("value"),
-                                "unit": latest.get("parameter", {}).get("units", "N/A"),
-                                "datetime": latest.get("datetime", {}),
-                                "total_measurements": len(measurements_list),
+                                "latest_value": measurement.get("value"),
+                                "unit": sensor_info["units"],
+                                "datetime": measurement.get("datetime", {}),
                                 "available": True
-                            })
-                        else:
-                            return (param_name, {
-                                "parameter_id": param_id,
-                                "parameter_name": param_name.upper(),
-                                "available": False
-                            })
-                    except Exception as e:
-                        return (param_name, {
+                            }
+                    
+                except Exception as e:
+                    # If fetching fails, mark all parameters as unavailable
+                    for param_name, param_id in self.PARAMETERS.items():
+                        location_info["measurements"][param_name] = {
                             "parameter_id": param_id,
                             "parameter_name": param_name.upper(),
                             "available": False,
                             "error": str(e)
-                        })
-                
-                # Fetch all parameters concurrently for this location
-                tasks = [fetch_parameter(param_name, param_id) for param_name, param_id in self.PARAMETERS.items()]
-                param_results = await asyncio.gather(*tasks)
-                
-                # Add measurement results
-                for param_name, param_data in param_results:
-                    location_info["measurements"][param_name] = param_data
+                        }
                 
                 # Calculate summary statistics
-                available_measurements = sum(1 for _, data in param_results if data.get("available", False))
+                available_measurements = sum(
+                    1 for data in location_info["measurements"].values() 
+                    if data.get("available", False)
+                )
                 location_info["measurements_summary"] = {
                     "total_parameters": len(self.PARAMETERS),
                     "available_parameters": available_measurements,
