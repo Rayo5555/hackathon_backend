@@ -7,10 +7,9 @@ Requirements: earthaccess>=0.15, xarray, dask, numpy, python-dotenv
 import earthaccess
 import xarray as xr
 import numpy as np
-import os
 import json
 import time
-from datetime import datetime, timedelta
+from datetime import timedelta
 from dotenv import load_dotenv
 
 load_dotenv()  # Load Earthdata token from .env
@@ -83,7 +82,7 @@ print("✅ Authentication successful")
 DATE = "2025-04-10"
 print(f"🔍 Searching for TEMPO data on {DATE}...")
 results = earthaccess.search_data(
-    short_name="TEMPO_O3TOT_L3",  # TEMPO O3 Level-3 product
+    short_name="TEMPO_NO2_L3",  # TEMPO O3 Level-3 product
     version="V03",
     temporal=(f"{DATE} 00:00", f"{DATE} 23:59"),
     count=12
@@ -140,7 +139,10 @@ print(f"✅ Subset shape: {ds_subset.dims}")
 # ===============================
 variables = {
     "O3": "o3_below_cloud",
-    "SO2": "so2_index"
+    "SO2": "so2_index",
+    "AER": "uv_aerosol_index",
+    "NO2": "vertical_column_troposphere",
+    "HCHO": "vertical_column"
 }
 
 # ===============================
@@ -199,7 +201,7 @@ for name, data in output_json.items():
 # Return JSON object for programmatic use
 total_time = time.time() - overall_progress.start_time
 print(f"✅ JSON generation complete! Total time: {timedelta(seconds=int(total_time))}")
-print(f"📊 Summary:")
+print("📊 Summary:")
 for name, data in output_json.items():
     print(f"   {name}: {len(data)} data points")
 
