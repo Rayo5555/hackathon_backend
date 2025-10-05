@@ -180,14 +180,7 @@ class OpenAQClient:
                         measurements_list = location_data.get("results", [])
                         param_id_to_name = {v: k for k, v in self.PARAMETERS.items()}
                         
-                        # Initialize all parameters as not available
-                        for param_name in self.PARAMETERS.keys():
-                            location_info["measurements"][param_name] = {
-                                "parameter_id": self.PARAMETERS[param_name],
-                                "parameter_name": param_name.upper(),
-                                "available": False
-                            }
-                        
+                        # OPTIMIZADO: Solo agregar mediciones disponibles (no inicializar las no disponibles)
                         # Fill in the available measurements
                         for measurement in measurements_list:
                             sensor_id = measurement.get("sensorsId")
@@ -209,43 +202,19 @@ class OpenAQClient:
                                 }
                         
                 except asyncio.TimeoutError:
-                    # Timeout específico
-                    for param_name, param_id in self.PARAMETERS.items():
-                        location_info["measurements"][param_name] = {
-                            "parameter_id": param_id,
-                            "parameter_name": param_name.upper(),
-                            "available": False,
-                            "error": "timeout"
-                        }
+                    # Timeout específico - marcar como error pero no agregar measurements vacías
                     location_info["error"] = "Request timeout"
                     
                 except httpx.HTTPError as e:
-                    # Errores HTTP específicos
-                    for param_name, param_id in self.PARAMETERS.items():
-                        location_info["measurements"][param_name] = {
-                            "parameter_id": param_id,
-                            "parameter_name": param_name.upper(),
-                            "available": False,
-                            "error": f"http_error: {type(e).__name__}"
-                        }
+                    # Errores HTTP específicos - marcar como error pero no agregar measurements vacías
                     location_info["error"] = f"HTTP Error: {str(e)}"
                     
                 except Exception as e:
-                    # Otros errores
-                    for param_name, param_id in self.PARAMETERS.items():
-                        location_info["measurements"][param_name] = {
-                            "parameter_id": param_id,
-                            "parameter_name": param_name.upper(),
-                            "available": False,
-                            "error": str(e)
-                        }
+                    # Otros errores - marcar como error pero no agregar measurements vacías
                     location_info["error"] = f"Unexpected error: {str(e)}"
                 
                 # Calculate summary statistics
-                available_measurements = sum(
-                    1 for data in location_info["measurements"].values() 
-                    if data.get("available", False)
-                )
+                available_measurements = len(location_info["measurements"])
                 location_info["measurements_summary"] = {
                     "total_parameters": len(self.PARAMETERS),
                     "available_parameters": available_measurements,
@@ -268,14 +237,11 @@ class OpenAQClient:
                     "location_id": location.get("id"),
                     "name": location.get("name"),
                     "error": f"Processing failed: {str(result)}",
-                    "measurements": {
-                        param_name: {
-                            "parameter_id": param_id,
-                            "parameter_name": param_name.upper(),
-                            "available": False,
-                            "error": "processing_failed"
-                        }
-                        for param_name, param_id in self.PARAMETERS.items()
+                    "measurements": {},  # OPTIMIZADO: Vacío en lugar de agregar parámetros no disponibles
+                    "measurements_summary": {
+                        "total_parameters": len(self.PARAMETERS),
+                        "available_parameters": 0,
+                        "missing_parameters": len(self.PARAMETERS)
                     }
                 })
             else:
