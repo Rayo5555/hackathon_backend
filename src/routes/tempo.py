@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 import json
+
 router = APIRouter()
 
 @router.get("/get_data_NO2/{lat_min}/{lat_max}/{lon_min}/{lon_max}")
