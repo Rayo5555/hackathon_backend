@@ -1,9 +1,7 @@
 from fastapi import APIRouter
-from .. import tempoNacho, tempoNachoHCHO, tempoNachoNO2
+
 import json
-tempoNacho.main()
-tempoNachoHCHO.main()
-tempoNachoNO2.main()
+
 router = APIRouter()
 
 @router.get("/get_data_NO2/{lat_min}/{lat_max}/{lon_min}/{lon_max}")
