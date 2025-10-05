@@ -9,7 +9,7 @@ import xarray as xr
 import numpy as np
 import json
 import time
-from datetime import timedelta
+from datetime import timedelta, datetime
 from dotenv import load_dotenv
 from concurrent.futures import ProcessPoolExecutor
 
@@ -81,15 +81,21 @@ def main():
     # ===============================
     # 2️⃣ Search for TEMPO granules
     # ===============================
-    DATE = "2025-04-10"
-    print(f"🔍 Searching for TEMPO data on {DATE}...")
-    results = earthaccess.search_data(
-        short_name="TEMPO_O3TOT_L3",  # TEMPO O3 Level-3 product
-        version="V03",
-        temporal=(f"{DATE} 00:00", f"{DATE} 23:59"),
-        count=12
-    )
-    print(f"✅ Found {len(results)} granules")
+    days = 0
+    while True:
+        DATE =  (datetime.utcnow() - timedelta(days=days)).strftime("%Y-%m-%d")
+        print(f"🔍 Searching for TEMPO data on {DATE}...")
+        results = earthaccess.search_data(
+            short_name="TEMPO_HCHO_L3",  # TEMPO O3 Level-3 product
+            version="V03",
+            temporal=(f"{DATE} 00:00", f"{DATE} 23:59"),
+            count=3
+        )
+        print(f"✅ Found {len(results)} granules")
+        if len(results) > 0:
+            break
+        else:
+            days += 1
 
     # ===============================
     # 3️⃣ Open as virtual multi-file dataset

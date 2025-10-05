@@ -79,16 +79,21 @@ def main():
     # ===============================
     # 2️⃣ Search for TEMPO granules
     # ===============================
-    DATE =  "2024-04-10"
-    print(f"🔍 Searching for TEMPO data on {DATE}...")
-    results = earthaccess.search_data(
-        short_name="TEMPO_HCHO_L3",  # TEMPO O3 Level-3 product
-        version="V03",
-        temporal=(f"{DATE} 00:00", f"{DATE} 23:59"),
-        count=3
-    )
-    print(f"✅ Found {len(results)} granules")
-
+    days = 0
+    while True:
+        DATE =  (datetime.utcnow() - timedelta(days=days)).strftime("%Y-%m-%d")
+        print(f"🔍 Searching for TEMPO data on {DATE}...")
+        results = earthaccess.search_data(
+            short_name="TEMPO_HCHO_L3",  # TEMPO O3 Level-3 product
+            version="V03",
+            temporal=(f"{DATE} 00:00", f"{DATE} 23:59"),
+            count=3
+        )
+        print(f"✅ Found {len(results)} granules")
+        if len(results) > 0:
+            break
+        else:
+            days += 1
     # ===============================
     # 3️⃣ Open as virtual multi-file dataset
     # ===============================
@@ -149,7 +154,6 @@ def main():
         Faster downsample and convert to JSON list of {lat, lon, value}.
         Vectorized using xarray operations.
         """
-        start = time.time()
         if var_name not in ds:
             print(f"⚠️ Variable {var_name} not found")
             return []
@@ -179,8 +183,6 @@ def main():
         )
 
         print(f"✅ {var_name}: {len(data_list)} points exported")
-        end = time.time()
-        print(f"   Time taken for {var_name}: {timedelta(seconds=int(end - start))}")
         return data_list
 
     # Build final JSON object with overall progress tracking
@@ -213,4 +215,7 @@ def main():
     print(output_json)
 
 if __name__ == "__main__":
+    start = time.time()
     main()
+    end=time.time()
+    print(f"   Time taken: {timedelta(seconds=int(end - start))}")
