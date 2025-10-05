@@ -160,17 +160,21 @@ def main():
             latitude=coarsen_factor, longitude=coarsen_factor, boundary='trim'
         ).mean()
 
-        # Stack lat/lon to 1D
-        stacked = ds_down.stack(points=("latitude", "longitude"))
-
-        # Drop NaNs
-        stacked = stacked.dropna("points", how="any")
-
-        # Convert to list of dicts
-        data_list = [
-            {"lat": float(lat), "lon": float(lon), "value": float(val)}
-            for (lat, lon), val in zip(zip(stacked.latitude.values, stacked.longitude.values), stacked.values)
-        ]
+        df = ds_down.to_dataframe().reset_index()
+        
+        # Filtrar NaN y crear lista de diccionarios
+        data_list = (
+            df.dropna(subset=[var_name])
+            .apply(
+                lambda row: {
+                    "lat": float(row['latitude']),
+                    "lon": float(row['longitude']),
+                    "value": float(row[var_name])
+                },
+                axis=1
+            )
+            .tolist()
+        )
 
         print(f"✅ {var_name}: {len(data_list)} points exported")
         return data_list

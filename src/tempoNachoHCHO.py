@@ -9,7 +9,7 @@ import xarray as xr
 import numpy as np
 import json
 import time
-from datetime import timedelta
+from datetime import timedelta, datetime
 from dotenv import load_dotenv
 
 load_dotenv()  # Load Earthdata token from .env
@@ -79,7 +79,7 @@ def main():
     # ===============================
     # 2️⃣ Search for TEMPO granules
     # ===============================
-    DATE = "2025-04-10"
+    DATE =  "2024-04-10"
     print(f"🔍 Searching for TEMPO data on {DATE}...")
     results = earthaccess.search_data(
         short_name="TEMPO_HCHO_L3",  # TEMPO O3 Level-3 product
@@ -149,6 +149,7 @@ def main():
         Faster downsample and convert to JSON list of {lat, lon, value}.
         Vectorized using xarray operations.
         """
+        start = time.time()
         if var_name not in ds:
             print(f"⚠️ Variable {var_name} not found")
             return []
@@ -160,19 +161,26 @@ def main():
             latitude=coarsen_factor, longitude=coarsen_factor, boundary='trim'
         ).mean()
 
-        # Stack lat/lon to 1D
-        stacked = ds_down.stack(points=("latitude", "longitude"))
-
-        # Drop NaNs
-        stacked = stacked.dropna("points", how="any")
-
-        # Convert to list of dicts
-        data_list = [
-            {"lat": float(lat), "lon": float(lon), "value": float(val)}
-            for (lat, lon), val in zip(zip(stacked.latitude.values, stacked.longitude.values), stacked.values)
-        ]
+        # Convertir a DataFrame para exportación (más rápido para operaciones tabulares)
+        df = ds_down.to_dataframe().reset_index()
+        
+        # Filtrar NaN y crear lista de diccionarios
+        data_list = (
+            df.dropna(subset=[var_name])
+            .apply(
+                lambda row: {
+                    "lat": float(row['latitude']),
+                    "lon": float(row['longitude']),
+                    "value": float(row[var_name])
+                },
+                axis=1
+            )
+            .tolist()
+        )
 
         print(f"✅ {var_name}: {len(data_list)} points exported")
+        end = time.time()
+        print(f"   Time taken for {var_name}: {timedelta(seconds=int(end - start))}")
         return data_list
 
     # Build final JSON object with overall progress tracking
