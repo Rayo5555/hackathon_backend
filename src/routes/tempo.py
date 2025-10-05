@@ -1,5 +1,7 @@
-from fastapi import APIRouter
-
+from fastapi import APIRouter, FastAPI
+from src import tempoNacho, tempoNachoHCHO, tempoNachoNO2
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from contextlib import asynccontextmanager
 import json
 
 router = APIRouter()
