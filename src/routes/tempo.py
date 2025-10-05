@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from .. import tempoNacho
+from .. import tempoNacho, tempoNachoHCHO, tempoNachoNO2
 import json
 
 router = APIRouter()
