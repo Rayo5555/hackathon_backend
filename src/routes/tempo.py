@@ -1,5 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, FastAPI
 from .. import tempoNacho, tempoNachoHCHO, tempoNachoNO2
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from contextlib import asynccontextmanager
 import json
 
 router = APIRouter()
@@ -60,3 +62,15 @@ async def data_AER(lat_min: float, lat_max: float, lon_min: float, lon_max: floa
         if (lat_min <= float(i["lat"]) <= lat_max) and (lon_min <= float(i["lon"]) <= lon_max):
             data_return.append(i)
     return data_return
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(tempoNacho.main, 'interval', minutes=30)
+    scheduler.add_job(tempoNachoHCHO.main, 'interval', minutes=30)
+    scheduler.add_job(tempoNachoNO2.main, 'interval', minutes=30)
+    scheduler.start()
+    try:
+        yield
+    finally:
+        scheduler.shutdown()
