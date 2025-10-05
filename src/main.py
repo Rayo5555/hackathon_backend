@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from pathlib import Path
-from src.routes import users as users_router
+from src.routes import tempo as tempo_router
 from src.routes import air_quality
 
 # Load environment variables from the project root
@@ -34,7 +34,7 @@ app.add_middleware(
 )
 
 # Include routers
-app.include_router(users_router.router, prefix="/reclamo", tags=["Reclamos"])
+app.include_router(tempo_router.router, prefix="/tempo", tags=["Tempo"])
 app.include_router(air_quality.router, prefix="/air-quality", tags=["Air Quality"])
 
 
