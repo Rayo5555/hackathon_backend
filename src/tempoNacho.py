@@ -61,9 +61,9 @@ class ProgressTracker:
         bar = '█' * filled_length + '░' * (bar_length - filled_length)
         
         print(f"\r[{bar}] {percentage:5.1f}% | {self.description} | "
-            f"Step {self.current_step}/{self.total_steps} | "
-            f"Elapsed: {elapsed_str} | ETA: {remaining_str} {message}", 
-            end="", flush=True)
+              f"Step {self.current_step}/{self.total_steps} | "
+              f"Elapsed: {elapsed_str} | ETA: {remaining_str} {message}", 
+              end="", flush=True)
         
         if self.current_step >= self.total_steps:
             print()  # New line when complete
@@ -139,12 +139,10 @@ print(f"✅ Subset shape: {ds_subset.dims}")
 # 5️⃣ Variables to export
 # ===============================
 variables = {
-    "O3":  ("TEMPO_O3TOT_L3", "o3_below_cloud"),
-    "SO2": ("TEMPO_SO2_L3", "so2_column_amount"),
-    "NO2": ("TEMPO_NO2_L3", "no2_tropospheric_column"),
-    "HCHO": ("TEMPO_HCHO_L3", "hcho_column_amount"),
-    "AER": ("TEMPO_AER_L3", "aerosol_index")
+    "O3": "o3_below_cloud",
+    "SO2": "so2_index"
 }
+
 # ===============================
 # 6️⃣ Convert to JSON with progress tracking
 # ===============================
@@ -205,5 +203,5 @@ print(f"📊 Summary:")
 for name, data in output_json.items():
     print(f"   {name}: {len(data)} data points")
 
-# Return the JSON object
+
 print(output_json)
