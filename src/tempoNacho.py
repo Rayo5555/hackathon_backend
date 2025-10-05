@@ -82,7 +82,7 @@ print("✅ Authentication successful")
 DATE = "2025-04-10"
 print(f"🔍 Searching for TEMPO data on {DATE}...")
 results = earthaccess.search_data(
-    short_name="TEMPO_NO2_L3",  # TEMPO O3 Level-3 product
+    short_name="TEMPO_O3TOT_L3",  # TEMPO O3 Level-3 product
     version="V03",
     temporal=(f"{DATE} 00:00", f"{DATE} 23:59"),
     count=12
