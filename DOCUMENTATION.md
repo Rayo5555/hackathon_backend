@@ -980,8 +980,11 @@ cd hackathon_backend
 # Install UV package manager (if not installed)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
+#create virtual enviroment
+uv venv
+
 # Install dependencies
-uv sync
+uv add -r requirements.txt
 
 # Configure environment
 cp .env.example .env
